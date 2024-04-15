@@ -1,0 +1,28 @@
+{
+   "name": "@hauke5/utils",
+   "version": "1.0.8",
+   "description": "Utility functions for @hauke5 NextJS packages",
+   "author": {
+      "name": "hauke5",
+      "email": "helpfulscripts@gmail.com"
+   },
+   "bin": {
+      "utils": "./dist/index.sh"
+   },
+   "files": [
+      "dist"
+   ],
+   "license": "MIT",
+   "repository": {
+      "type": "git",
+      "url": "git+https://github.com/Hauke5/Utils.git"
+   },
+   "scripts": {},
+   "dependencies": {},
+   "devDependencies": {
+      "typescript": "^5",
+      "@types/node": "^20",
+      "eslint": "^8",
+      "eslint-config-next": "14.2.1"
+   }
+}
