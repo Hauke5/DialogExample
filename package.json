@@ -1,7 +1,7 @@
 {
-   "name": "@hauke5/utils",
-   "version": "1.0.8",
-   "description": "Utility functions for @hauke5 NextJS packages",
+   "name": "@hauke5/dialog",
+   "version": "1.0.0",
+   "description": "Provides a standardiazed dialog box for NextJS",
    "author": {
       "name": "hauke5",
       "email": "helpfulscripts@gmail.com"
@@ -15,13 +15,20 @@
    "license": "MIT",
    "repository": {
       "type": "git",
-      "url": "git+https://github.com/Hauke5/Utils.git"
+      "url": "git+https://github.com/Hauke5/Dialog.git"
    },
    "scripts": {},
-   "dependencies": {},
+   "dependencies": {
+      "next": "^14",
+      "next-auth": "^4.24.7",
+      "node": "^20.12.2",
+      "react": "^18.2.0",
+      "sass": "^1.75.0"
+   },
    "devDependencies": {
       "typescript": "^5",
       "@types/node": "^20",
+      "@types/react": "^18.2.78",
       "eslint": "^8",
       "eslint-config-next": "14.2.1"
    }
