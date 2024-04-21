@@ -2,7 +2,7 @@ import { ChangeEvent, FocusEvent, InputHTMLAttributes, KeyboardEvent, useId, use
                            from "react"
 
 
-export type InputDataType  = number|string|string[]|boolean|Date
+export type InputDataType  = number|string|boolean|Date
 export type InputType = 'text'|'number'|'boolean'|'date'|'select'|'file'
 
 interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "list"|"value"|"type"|"onChange"> {

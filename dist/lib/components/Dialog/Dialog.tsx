@@ -4,7 +4,7 @@ import { Rerender, useRerender } from "@/lib/hooks/useRerender"
 import { BaseProps }             from "@/lib/components/BaseProps"
 import { Input }                 from "@/lib/components/Input/Input"
 import styles                    from './Dialog.module.scss'
-import { DialogButton, DialogContent, DialogElementDesc, DialogExtendedContent, DialogReturn, ExtendedElement, OpenDialog }   
+import { DialogConfig, DialogButtonConfig,  DialogReturn, DialogDesc, DialogItem, OpenDialog, ItemsLiteral, DialogItemTextConfig, ItemsResultLiteral }   
                                  from './DialogTypes'
 
 const OFF_SCREEN = -10000
@@ -16,24 +16,24 @@ type DialogProps = BaseProps & {
 }
 
 
-export type DialogHandlerProps = {
-   el:         ExtendedElement
-   dlgContent: DialogExtendedContent
+export type DialogItemHandlerProps = {
+   item:       DialogItem
+   dialog:     DialogDesc
    rerender:   Rerender
    act:        (action:string)=>void
 }
 
-export function addHandler(handle:string, handler:Handler) {
-   handlers[handle] = handler
+export function addDialogItemHandler(handle:string, handler:DialogItemHandler) {
+   dialogItemHandlers[handle] = handler
 }
 
-type Handler = (props: DialogHandlerProps) => JSX.Element
-type Handlers = {
-   [type:string]: Handler
+type DialogItemHandler = (props: DialogItemHandlerProps) => JSX.Element
+type DialogItemHandlers = {
+   [type:string]: DialogItemHandler
 }
-const handlers:Handlers = {
+const dialogItemHandlers:DialogItemHandlers = {
    // defaut handler, supports 'number', 'date', 'boolean', 'select', 'text', and 'file' on client side
-   default: DialogItem
+   default: DialogItemHandler
 }
 
 /**
@@ -87,7 +87,7 @@ const handlers:Handlers = {
 export function Dialog({open}:DialogProps) {
    const ref            = useRef<HTMLDialogElement>(null)
    const rerender       = useRerender()
-   const [ct, setCT]    = useState<DialogExtendedContent>()
+   const [ct, setCT]    = useState<DialogDesc>()
    const response       = useRef<(value: DialogReturn) => void>()
    const [pos, setPos]  = useState({x:100, y:100, _x:-10000, _y:-10000})
 
@@ -95,19 +95,20 @@ export function Dialog({open}:DialogProps) {
    useEffect(()=>{ open(openWithContent) },[open])
 
    const style = {top: pos.y, left: pos.x}
+   if (!ct) return <></>
    return <dialog ref={ref} style={style} className={styles.dialog} onMouseMove={duringMove} onMouseUp={endMove}>
       <div className={styles.content}>
          <div className={styles.contentTitle} onMouseDown={startMove}>{ct?.title}</div>
          <div className={styles.contentArea}> 
-            {ct?.elements?.map(el => { 
-               const Handler = handlers[el.type] ?? handlers.default
-               return <Handler    el={el} dlgContent={ct} key={el.key} rerender={rerender} act={act}/>
+            {ct.items.map(item => { 
+               const Handler = dialogItemHandlers[item.type] ?? dialogItemHandlers.default
+               return <Handler item={item} dialog={ct} key={item.key} rerender={rerender} act={act}/>
             })}
          </div>
          <div className={styles.buttonArea}>  
             {ct?.buttons?.map(b => {
                const [name, button] = Object.entries(b)[0]
-               return <DlgButton name={name} button={button} act={act} elements={ct.elements} key={`btn_${rerender.count()}_${name}`}/>
+               return <DlgButton name={name} button={button} act={act} dialog={ct} key={`btn_${rerender.count()}_${name}`}/>
             })}
             <button onClick={()=>act(cancelButton)} className={styles.cancel}>{cancelButton}</button>
          </div>
@@ -120,21 +121,42 @@ export function Dialog({open}:DialogProps) {
     * @param content 
     * @returns 
     */
-   async function openWithContent(content:DialogContent):Promise<DialogReturn> {
+   async function openWithContent(content:DialogConfig):Promise<DialogReturn> {
       ref.current?.showModal()
       // initialize dialog with defaults, keep other values from prior dialog call
-      content.elements.forEach((el:DialogElementDesc) => {
-         (el as ExtendedElement).isDefault = true
+      const dialogItems:DialogItem[] = content.items.map(dialogItem => {
+         const [key, item] = Object.entries(dialogItem)[0]
+         return {
+            key,
+            type:       item.type,
+            label:      item.label ?? key,
+            isDefault:  true,
+            initial:    item.initial as typeof item.type,
+            value:      item.initial as typeof item.type,
+            disable:    item.disable ?? (()=>false),
+            sideEffect: item.sideEffect ?? (()=>({})),
+            list:       (item as DialogItemTextConfig).list ?? [],
+         } as DialogItem
       })
-      setCT(getExtendedContent(content))
+      const dialogDesc = {
+         title:      content.title,
+         items:      dialogItems,
+         buttons:    content.buttons,    
+      }
+      setCT(dialogDesc)
       return new Promise<DialogReturn>((resolve) => response.current = resolve)
    }
 
-   function act(action:string) {
+   /** 
+    * called when Dialog signals a resulting `action` being called. Thus ia usually triggered by one of the dialog buttons,
+    * but can also originate elsewhere, e.g. when double clicking on a file 
+    */
+   function act(actionName:string) {
       // close the dialog box
       ref.current?.close()
+      const items = ct? itemsResultLiteral(ct?.items) : {}
       // respond to open call with the result
-      response.current?.({actionName: action, values:mapFromElements(ct!.elements)})
+      response.current?.({actionName, items})
    }
 
    function startMove(e:MouseEvent) {
@@ -151,54 +173,64 @@ export function Dialog({open}:DialogProps) {
    }
 }
 
+function itemsResultLiteral(items:DialogItem[]):ItemsResultLiteral {
+   return Object.fromEntries(items.map(item => [item.key, {
+      value:      item.value,
+      isDefault:  item.isDefault,
+      type:       item.type,
+   }]))
+}
+function itemsLiteral(items:DialogItem[]):ItemsLiteral {
+   return Object.fromEntries(items.map(item => [item.key, item]))
+}
 
 /** 
  * Default dialog item implementation.
  * Implements the types 'number', 'date', 'boolean', 'select', 'text'; 
  * and treats any other types as 'text'.
  */
-function DialogItem({el, dlgContent, rerender}:{el:ExtendedElement, dlgContent: DialogExtendedContent, rerender:Rerender, act:(action:string)=>void}) {
-   const disabled = el.disable?.(mapFromElements(dlgContent.elements)) ?? false
+function DialogItemHandler({item, dialog, rerender}:{item:DialogItem, dialog: DialogDesc, rerender:Rerender, act:(action:string)=>void}) {
+   const disabled = item.disable(itemsLiteral(dialog.items)) ?? false
    const classNameLabel = `${styles.elementLabel} ${disabled?styles.disabled:''}`
    const classNameValue = `${styles.elementValue} ${disabled?styles.disabled:styles.editable}`
-   const label = el.label ?? el.key
-   const list = typeof el.list === 'function'? el.list() : el.list
+   const label = item.label ?? item.key
+   const list = typeof item.list === 'function'? item.list() : item.list
    return <div className={styles.dialogItem}>
       <span className={classNameLabel}>{label}</span>
-      <Input type={el.type} disabled={disabled} name={el.key} value={el.value} key={`${el.key}_${el.value}`} onChange={update} list={list}  className={classNameValue}/>
+      <Input type={item.type} disabled={disabled} name={item.key} value={item.value} key={`${item.key}_${item.value}`} onChange={update} list={list}  className={classNameValue}/>
    </div>
    function update(newValue:string) {
-      switch(el.type) {
-         case 'number': el.value = +newValue; break;
-         case 'date':   el.value = new Date(`${newValue} 00:00`); break;
-         case 'boolean':el.value = newValue==='on'? true : false; break;
+      switch(item.type) {
+         case 'number': item.value = +newValue; break;
+         case 'date':   item.value = new Date(`${newValue} 00:00`); break;
+         case 'boolean':item.value = newValue==='on'? true : false; break;
          case 'select': 
          case 'text': 
-         default:       el.value = newValue;
+         default:       item.value = newValue;
       }         
-      el.isDefault = false
-      doSideEffect(el, dlgContent.elements)
+      item.isDefault = false
+      doSideEffect(item, dialog.items)
       rerender()
    }
 }
 
-export function doSideEffect(elem:ExtendedElement, elements:(ExtendedElement)[]) {
-   const changes = elem.sideEffect?.(elem.value, mapFromElements(elements)) ?? {}
+export function doSideEffect(item:DialogItem, items:DialogItem[]) {
+   const changes = item.sideEffect?.(item.value, itemsLiteral(items)) ?? {}
    for (const key in changes) {
-      const elmt = elements.find(el => el.key===key)
+      const elmt = items.find(el => el.key===key)
       if (elmt?.isDefault) elmt.value = changes[key]
    }
 }
 
 type DlgButtonProps = {
-   name:                string
-   button:              DialogButton
-   elements:            (ExtendedElement)[]
-   act:                 (action:string)=>void
+   name:    string
+   button:  DialogButtonConfig
+   dialog:  DialogDesc
+   act:     (action:string)=>void
 }
-function DlgButton({name, button, elements, act}:DlgButtonProps) {
+function DlgButton({name, button, dialog, act}:DlgButtonProps) {
    const [isPending, startTransition] = useTransition();
-   const disabled = button.disable?.(mapFromElements(elements))
+   const disabled = button.disable?.(itemsLiteral(dialog.items))
 
    return <button onClick={e=>disabled?'':click(e)} disabled={isPending||disabled}>{name}</button>
    
@@ -208,16 +240,6 @@ function DlgButton({name, button, elements, act}:DlgButtonProps) {
    }
 }
 
-const mapFromElements = (elements:ExtendedElement[]) => 
-   Object.fromEntries(new Map<string,ExtendedElement>(elements.map(el => [el.key, el])))
+// const mapFromElements = (dialog:  DialogDesc) => 
+//    Object.fromEntries(new Map<string,ExtendedElement>(dialog.items.map(item => [item.key, item])))
 
-function getExtendedContent(content:DialogContent) {
-   const dialogContent = Object.assign({}, content) as DialogExtendedContent
-   dialogContent.elements = dialogContent.elements.map(e => {
-      e.value = e.value ?? e.initial ?? (typeof e.list==='function'? e.list() : e.list)?.[0] ?? '';
-      e.rerender = 0
-      e.isDefault = true
-      return e
-   })
-   return dialogContent
-}

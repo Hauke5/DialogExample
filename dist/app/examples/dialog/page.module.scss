@@ -4,46 +4,48 @@
    line-height:    1.5em;
    overflow-y: scroll;
    height: 100%;
-   .pageTitle {
-      margin: 10px 0;
-   }
-   .instructions {
-      margin-left: 20px;
-      li {
-         padding: 5px 0 0 0;
-         line-height: 1.4em;
+   .app {
+      .appTitle {
+         margin: 10px 0;
       }
-      code {
-         background-color: #eee;
-         padding: 0 5px;
-         border-radius: 5px;
-         font-size: 90%;
+      .instructions {
+         margin-left: 20px;
+         li {
+            padding: 5px 0 0 0;
+            line-height: 1.4em;
+         }
+         code {
+            background-color: #eee;
+            padding: 0 5px;
+            border-radius: 5px;
+            font-size: 90%;
+         }
       }
-   }
-   .button {
-      margin: 10px 0;
-   }
-   .resultConfig {
-      display: flex;
-      flex-flow: row nowrap;
-      justify-content: left;
-      width: 100%;
-      .title {
-         color: #888;
-         font-weight: bold;
-         font-size: 80%;
+      .button {
+         margin: 10px 0;
       }
-      &>div {
-         margin: 0 5px;
-         padding: 0 5px 0 5px;
-         border:  1px solid #ccf;
-      }
-      .dialogResult {
-         padding-right: 30px;
-      }
-      .dialogConfig {
-         font-size: 80%;
-         line-height: 1.2em;
+      .resultConfig {
+         display: flex;
+         flex-flow: row nowrap;
+         justify-content: left;
+         width: 100%;
+         .title {
+            color: #888;
+            font-weight: bold;
+            font-size: 80%;
+         }
+         &>div {
+            margin: 0 5px;
+            padding: 0 5px 0 5px;
+            border:  1px solid #ccf;
+         }
+         .dialogResult {
+            padding-right: 30px;
+         }
+         .dialogConfig {
+            font-size: 80%;
+            line-height: 1.2em;
+         }
       }
    }
 }
