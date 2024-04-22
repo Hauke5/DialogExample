@@ -46,7 +46,7 @@ const instructions = <ul className={styles.instructions}>
       unless the user has changed the <code>Text</code> field</li>
    </ul>
    <li>Click the <code>Ok</code> button when available. 
-   The box below will reflect the values from the dialog.</li>
+   The left box below will reflect the values from the dialog.</li>
 </ul>
 
 

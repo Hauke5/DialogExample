@@ -23,8 +23,8 @@ const instructions = <ul className={styles.instructions}>
    <li>Click <code>Show Dialog</code> and change the fields. <br/>
       <b>Hint:</b>You can move the box by dragging it in the title field.
    </li>
-   <li>Click the <code>Ok</code> button when available. 
-   The box below will reflect the values from the dialog.</li>
+   <li>Click the <code>Ok</code> button when done. 
+   The left box below will reflect the values from the dialog.</li>
 </ul>
 
 const simpleDialogConfig:DialogConfig = {
