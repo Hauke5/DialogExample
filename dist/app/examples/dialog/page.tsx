@@ -46,7 +46,7 @@ export default function DialogExample() {
          <DialogResult result={result} showing={showing}/>
          <DialogConfig configText={examples.current[app].configText}/>
       </div>
-      <Dialog open={(open:OpenDialog)=>openDialog.current=open} />
+      <Dialog open={open=>openDialog.current=open} />
    </div>
 
    async function runDialog() {

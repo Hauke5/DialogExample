@@ -76,10 +76,10 @@ const config = (textfieldHistory:string[]):DialogConfig => ({
 function isOKDisabled(values:ItemsLiteral) {
    return values[keys.numberField].value===0
 }
-function numChanged(value:number, values:ItemsLiteral):{[key:string]:any} {
-   const textItem = values[keys.textField]
-   return textItem?.isDefault
-      ? {[keys.textField]:(+value !== 0)? 'valid number' : 'invalid number' }
+function numChanged(value:number, items:ItemsLiteral):{[key:string]:any} {
+   const textItem = items[keys.textField]
+   return textItem.isDefault
+      ? {[keys.textField]:(value !== 0)? 'valid number' : 'invalid number' }
       : {}
 }
 
@@ -98,13 +98,12 @@ const configText = `{
 }
 
 function isOKDisabled(values:ItemsLiteral) {
-   return values[keys.numberField].value===0
+   return values.Number.value===0
 }
 
 function numChanged(value:number, values:ItemsLiteral):{[key:string]:any} {
-   const textItem = values[keys.textField]
-   return textItem?.isDefault
-      ? {[keys.textField]:(+value !== 0)? 'valid number' : 'invalid number' }
+   return values.Text.isDefault
+      ? {Text: value!==0? 'valid number' : 'invalid number' }
       : {}
 }
 `
