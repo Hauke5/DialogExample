@@ -11,5 +11,6 @@ pwd
 npm i
 cp -R ./node_modules/@hauke5/utils/dist/lib ./
 cp -R ./node_modules/@hauke5/nextjs-utils/dist/lib ./
+cp ./lib/components/Dialog/readme.md ./
 npm run dev
 echo "type 'cd ./$Bundle', then 'npm run dev', then point a browser to htp://localhost:3000/examples/"$bundle
