@@ -76,7 +76,7 @@ const dialogItemHandlers:DialogItemHandlers = {
  * const content = {
  *    title: `Example Dialog:`,
  *    elements:[
- *       { key:volumeKey,  type:'number', initial,  label: 'Volume:' },
+ *       {[volumeKey]: { type:'number', initial,  label: 'Volume:' }},
  *    ],
  *    buttons:[
  *       {[updateButton]: {}}
@@ -95,9 +95,8 @@ export function Dialog({open}:DialogProps) {
    useEffect(()=>{ open(openWithContent) },[open])
 
    const style = {top: pos.y, left: pos.x}
-   if (!ct) return <></>
    return <dialog ref={ref} style={style} className={styles.dialog} onMouseMove={duringMove} onMouseUp={endMove}>
-      <div className={styles.content}>
+      {ct && <div className={styles.content}>
          <div className={styles.contentTitle} onMouseDown={startMove}>{ct?.title}</div>
          <div className={styles.contentArea}> 
             {ct.items.map(item => { 
@@ -112,7 +111,7 @@ export function Dialog({open}:DialogProps) {
             })}
             <button onClick={()=>act(cancelButton)} className={styles.cancel}>{cancelButton}</button>
          </div>
-      </div>
+      </div>}
    </dialog>
 
    /**
