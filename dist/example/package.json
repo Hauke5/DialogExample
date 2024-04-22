@@ -6,18 +6,16 @@
       "name": "hauke5",
       "email": "helpfulscripts@gmail.com"
    },
-   "bin": {
-      "utils": "./dist/index.sh"
-   },
-   "files": [
-      "dist"
-   ],
    "license": "MIT",
    "repository": {
       "type": "git",
       "url": "git+https://github.com/Hauke5/Dialog.git"
    },
-   "scripts": {},
+   "scripts": {
+      "dev": "./node_modules/.bin/next dev",
+      "build": "next build",
+      "start": "./node_modules/.bin/next start"
+   },
    "dependencies": {
       "next": "^14",
       "next-auth": "^4.24.7",
