@@ -28,7 +28,7 @@ const instructions = <ul className={styles.instructions}>
 </ul>
 
 const simpleDialogConfig:DialogConfig = {
-   title: `Example:`,
+   title: `Simple Dialog Example:`,
    items:[
       { 'Enter Valid Number:': { type:'number', initial: 0}},
    ],
@@ -38,7 +38,7 @@ const simpleDialogConfig:DialogConfig = {
 }
 
 const configText = `{
-   title: 'Example:',
+   title: 'Simple Dialog Example:',
    items:[
       { 'Enter Valid Number:': { type:'number', initial: 0 }},
    ],

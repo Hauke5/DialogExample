@@ -6,22 +6,6 @@ import styles           from './page.module.scss'
 import { Example }      from "./page";
 
 
-// type DialogResult = {
-//    date:    Date 
-//    number:  number
-//    text:    string
-//    check:   boolean, 
-//    list:    string
-// }
-
-// const dialogDefault:DialogResult = {
-//    date:new Date(`1/1/2001`), 
-//    number:0, 
-//    text:'none', 
-//    check:false, 
-//    list:''
-// }
-
 const textfieldHistoryDefault = [
    'happy', 'sad', 'blue'
 ]
@@ -76,7 +60,7 @@ const keys = {
 }
 
 const config = (textfieldHistory:string[]):DialogConfig => ({
-   title: `Example fields:`,
+   title: `Dialog Example With Side-Effects:`,
    items:[
       {[keys.dateField]:{type:'date',   initial: new Date() }},
       {[keys.numberField]:{type:'number', initial: 0,         label:'Enter Valid Number:',  sideEffect:numChanged}},
@@ -99,10 +83,8 @@ function numChanged(value:number, values:ItemsLiteral):{[key:string]:any} {
       : {}
 }
 
-
-
 const configText = `{
-   title: 'Example fields:',
+   title: 'Dialog Example With Side-Effects:',
    items:[
       { Date:     {type:'date',   initial: new Date() }},
       { Number:   {type:'number', initial: 0,         label:'Enter Valid Number:',  sideEffect:numChanged}},
