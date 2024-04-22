@@ -4,8 +4,24 @@
    line-height:    1.5em;
    overflow-y: scroll;
    height: 100%;
-   .h2 {
-      margin: 10px 5px;
+   h2, h3 {
+      margin: 20px 0 10px 0;
+   }
+   .intro {
+      margin-bottom: 20px;
+   }
+   button {
+      margin: 0;
+   }
+   .examples {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: left;
+      gap: 10px;
+      margin: 5px 0;
+   }
+   .showButton {
+      margin: 10px 0;
    }
    .appTitle {
       margin: 10px 0;
@@ -23,13 +39,11 @@
          font-size: 90%;
       }
    }
-   .button {
-      margin: 10px 0;
-   }
    .resultConfig {
       display: flex;
       flex-flow: row nowrap;
       justify-content: left;
+      gap: 10px;
       width: 100%;
       .title {
          color: #888;
@@ -37,7 +51,7 @@
          font-size: 80%;
       }
       &>div {
-         margin: 0 5px;
+         //margin: 0 5px;
          padding: 0 5px 0 5px;
          border:  1px solid #ccf;
       }

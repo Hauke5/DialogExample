@@ -3,7 +3,17 @@ A [NextJS](https://nextjs.org/) component package for simplifying and standardiz
 
 ## Installation
 Use `npm` to install the libraries:
-> $ npm i hauke5/dialog@latest
+```
+$ npm i hauke5/dialog@latest
+``` 
+
+Or `npx` to create a standalone NextJS application:
+```
+$ npx hauke5/dialog@latest
+$ cd dialog
+$ npm run dev
+```
+Then point a browser to http://localhost:3000/examples/dialog
 
 
 

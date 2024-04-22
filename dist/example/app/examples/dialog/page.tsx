@@ -36,10 +36,14 @@ export default function DialogExample() {
    },[app])
 
    return <div className={styles.app}>
-      <h2 className={styles.h2}>Dialog Examples</h2>
-      {examples.current.map((ex, i) => ex.name && <button onClick={()=>setApp(i)} key={ex.name}>{ex.name}</button>)}
+      <h2>Dialog Examples</h2>
+      <div className={styles.intro}>Choose one the following dialog examples to start:</div>
+      <div className={styles.examples}>
+         {examples.current.map((ex, i) => ex.name && <button onClick={()=>setApp(i)} key={ex.name}>{ex.name}</button>)}
+      </div>
+      <h3>{examples.current[app].name}</h3>
       {examples.current[app].instructions}
-      <div className={styles.button}>
+      <div className={styles.showButton}>
          {examples.current[app].name && <button onClick={runDialog}>{showing?'Hide Dialog':'Show Dialog'}</button>}
       </div>
       <div className={styles.resultConfig}>
