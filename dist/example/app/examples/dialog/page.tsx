@@ -36,7 +36,7 @@ export default function DialogExample() {
    },[app])
 
    return <div className={styles.app}>
-      <h2>Dialog Examples</h2>
+      <h2 className={styles.h2}>Dialog Examples</h2>
       {examples.current.map((ex, i) => ex.name && <button onClick={()=>setApp(i)} key={ex.name}>{ex.name}</button>)}
       {examples.current[app].instructions}
       <div className={styles.button}>
