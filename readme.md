@@ -7,7 +7,7 @@ Use `npm` to install the libraries:
 $ npm i hauke5/dialog@latest
 ``` 
 
-Or `npx` to create a standalone NextJS application:
+Or `npx` to create a standalone NextJS application with an example for using `<Dialog>`:
 ```
 $ npx hauke5/dialog@latest
 $ cd dialog
@@ -74,7 +74,9 @@ function Component() {
 
    async function runDialog() {
       if (openDialog.current) {
+         // open the dialog with `dialogConfog` as content
          const result = await openDialog.current(dialogConfig)
+         // process the result action and item values
          if (result.actionName==='Ok') {
             const number = result.items['Enter Valid Number:'].value as number
             ...
