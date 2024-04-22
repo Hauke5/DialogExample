@@ -22,7 +22,7 @@
       ],
       "baseUrl": ".",
       "paths": {
-         "@/app/*":         ["./dist/app/*"],
+         "@/app/*":         ["dist/example/app/*"],
          "@/lib/*":         ["./dist/lib/*"],
       }
    },
