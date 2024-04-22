@@ -9,7 +9,6 @@ Use `npm` to install the libraries:
 
 
 ## Usage
-<img src="./docs/SimpleDialog.png" width="400" style="float:right">
 
 ### Defining a Dialog
 A dialog is defined by the `DialogConfig` structure, consisting of 
@@ -20,20 +19,21 @@ A dialog is defined by the `DialogConfig` structure, consisting of
 A `Cancel` button will be automatically added by the component
 
 A simple dialog configuration might look like this:
-<pre style="font-size:80%">
+```typescript
 {
    title: 'Simple Dialog Example:',
    elements:[
       { 'Enter Valid Number': { type:'number', initial: 0 }},
    ],
    buttons:[
-      { Ok: {}}, 
+      { OK: {}}, 
    ]
 }
-</pre>
+```
+<img src="./docs/SimpleDialog.png" width="400">
 
 The keys for items and buttons are by default used as their labels. Alternatively, an optional `label` field can be specified:
-<pre style="font-size:80%">
+```typescript
 {
    title: 'Example:',
    elements:[
@@ -43,7 +43,7 @@ The keys for items and buttons are by default used as their labels. Alternativel
       { OkButton: { label:'OK'}}, 
    ]
 }
-</pre>
+```
 
 
 
@@ -53,7 +53,7 @@ Add a `<Dialog>` component at the end of React nodes in your component. It takes
 To open the dialog, call the `open` function provided by `<Dialog>` with the dialog content structure. The asynchronously process the dialog result. It provides 
 - the key of the button pressed (or, in some cases, an ID for some predefined dialog action sucj as double-clicking a file in a file selector field)
 - a `DialogItemResult` structure for each item key, providing the `type` and current `value` of the item, as well as a boolean `isDefault` that is `true` if the user has directly manipulated the item, and `false` if the value is either the `initial` value or the result of a `sideEffect`. 
-```
+```typescript
 function Component() {
    const openDialog  = useRef<OpenDialog>()
 
@@ -82,7 +82,7 @@ Two types of side effects are currently available:
 ### Disabling Buttons
 Add a `disable` callback to a button configuration to tell the `<Dialog>` whether the button should be active or disabled.
 The following example disables the `OkButton` if the `ValidItem` value is `0`
-<pre style="font-size:80%">
+```typescript
    ...
    buttons:[
       {OkButton: {disable:isOKDisabled}}, 
@@ -92,13 +92,13 @@ The following example disables the `OkButton` if the `ValidItem` value is `0`
 function isOKDisabled(values:ItemsLiteral) {
    return values.ValidItem.value===0
 }
-</pre>
+```
 
 ### Item SideEffects
 Add a `sideEffect` callback to an item configuration to have user-changes to the item value trigger updates to other items.
 The callback will receive the current `value` of the item, as well as a reference to the set of all items.
 In the example below, `validItemChange` will be called each time the `ValidItem` number field changes. It will change the `TextItem` field, if it hasn't been explicitely set by the user, to read `invalid number` if the number value is `0`, and `valid number` otherwise.
-<pre style="font-size:80%">
+```typescript
 {
    title: 'Example:',
    elements:[
@@ -115,4 +115,4 @@ function validItemChange(value:number, items:ItemsLiteral):{[key:string]:any} {
       ? {TextItem: value!==0? 'valid number' : 'invalid number' }
       : {}
 }
-</pre>
+```
