@@ -10,7 +10,7 @@
       "utils": "dist/index.sh"
    },
    "files": [
-      "dist"
+      "dist", "docs"
    ],
    "license": "MIT",
    "repository": {
