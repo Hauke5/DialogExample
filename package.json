@@ -1,7 +1,7 @@
 {
    "name": "@hauke5/dialog",
    "version": "1.0.26",
-   "description": "Provides a standardiazed dialog box for NextJS",
+   "description": "Provides a standardized dialog box for NextJS",
    "author": {
       "name": "hauke5",
       "email": "helpfulscripts@gmail.com"
