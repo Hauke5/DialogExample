@@ -10,8 +10,8 @@
       "utils": "dist/runExample.sh"
    },
    "files": [
-      "dist",
-      "docs"
+      "dist/*",
+      "docs/*"
    ],
    "license": "MIT",
    "repository": {
