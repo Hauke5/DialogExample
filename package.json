@@ -1,6 +1,6 @@
 {
    "name": "@hauke5/dialog",
-   "version": "1.0.46",
+   "version": "1.0.45",
    "description": "Provides a standardized dialog box for NextJS",
    "author": {
       "name": "hauke5",
@@ -9,10 +9,6 @@
    "bin": {
       "utils": "dist/runExample.sh"
    },
-   "files": [
-      "dist/*",
-      "docs/*"
-   ],
    "license": "MIT",
    "repository": {
       "type": "git",
