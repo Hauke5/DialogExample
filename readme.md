@@ -15,9 +15,6 @@ $ npm run dev
 ```
 Then point a browser to http://localhost:3000/examples/dialog
 
-
-
-
 ## Usage
 
 ### Defining a Dialog
