@@ -36,22 +36,35 @@ export default function DialogExample() {
    },[app])
 
    return <div className={styles.app}>
-      <h2>Dialog Examples</h2>
-      <div className={styles.intro}>Choose one the following dialog examples to start:</div>
-      <div className={styles.examples}>
-         {examples.current.map((ex, i) => ex.name && <button onClick={()=>setApp(i)} key={ex.name}>{ex.name}</button>)}
-      </div>
-      <h3>{examples.current[app].name}</h3>
-      {examples.current[app].instructions}
-      <div className={styles.showButton}>
-         {examples.current[app].name && <button onClick={runDialog}>{showing?'Hide Dialog':'Show Dialog'}</button>}
-      </div>
+      <Intro />
+      <Instructions />
       <div className={styles.resultConfig}>
          <DialogResult result={result} showing={showing}/>
          <DialogConfig configText={examples.current[app].configText}/>
       </div>
       <Dialog open={open=>openDialog.current=open} />
    </div>
+
+   function Intro() {
+      return <>
+         <h2>Dialog Examples</h2>
+         <div className={styles.intro}>Choose one the following dialog examples to start:</div>
+         <div className={styles.examples}>
+            {examples.current.map((ex, i) => ex.name && <button onClick={()=>setApp(i)} key={ex.name}>{ex.name}</button>)}
+         </div>
+      </>
+   }
+
+   function Instructions() {
+      return <>
+         <h3>{examples.current[app].name}</h3>
+         {examples.current[app].instructions}
+         <div className={styles.showButton}>
+            {examples.current[app].name && <button onClick={runDialog}>{showing?'Hide Dialog':'Show Dialog'}</button>}
+         </div>
+      </>
+   }
+
 
    async function runDialog() {
       setShowing(true)
