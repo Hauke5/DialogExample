@@ -2,18 +2,17 @@
 A [NextJS](https://nextjs.org/) component package for simplifying and standardizing the use of user dialog in NextJS apps.
 
 ## Installation
-Use `npm` to install the libraries:
+Use `npm` to install as a library:
 ```
 $ npm i hauke5/dialog@latest
 ``` 
 
-Or `npx` to create a standalone NextJS application with an example for using `<Dialog>`:
+Or use `npx` to create and start a standalone NextJS application with an example for using `<Dialog>`:
 ```
 $ npx hauke5/dialog@latest
-$ cd dialog
-$ npm run dev
 ```
-Then point a browser to http://localhost:3000/examples/dialog
+This will start a next development server on port 3010
+Point a browser to http://localhost:3000/example to run the example
 
 ## Usage
 
