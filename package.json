@@ -7,7 +7,7 @@
       "email": "helpfulscripts@gmail.com"
    },
    "bin": {
-      "utils": "dist/runExample.sh"
+      "utils": "runExample.sh"
    },
    "license": "MIT",
    "repository": {

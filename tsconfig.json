@@ -22,8 +22,8 @@
       ],
       "baseUrl": ".",
       "paths": {
-         "@/app/*":         ["./dist/example/app/*"],
-         "@/lib/*":         ["./dist/lib/*", "./node_modules/@hauke5/nextjs-utils/dist/lib/*"],
+         "@/app/*":         ["./app/*"],
+         "@/lib/*":         ["./lib/*", "./node_modules/@hauke5/nextjs-utils/dist/lib/*"],
       }
    },
    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
