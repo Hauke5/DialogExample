@@ -23,7 +23,7 @@
       "baseUrl": ".",
       "paths": {
          "@/app/*":         ["./app/*"],
-         "@/lib/*":         ["./lib/*", "./node_modules/@hauke5/nextjs-utils/dist/lib/*"],
+         "@/lib/*":         ["./lib/*", "./node_modules/@hauke5/nextjs-utils/lib/*", "./node_modules/@hauke5/utils/lib/*"],
       }
    },
    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
