@@ -39,8 +39,8 @@
       }
    }
    .resultConfig {
-      display: flex;
-      flex-flow: row nowrap;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
       justify-content: left;
       gap: 10px;
       width: 100%;
@@ -67,9 +67,12 @@
          }
       }
       .dialogConfig {
+         width:100%;
+         overflow:hidden;
          .configText {
             font-size: 80%;
             line-height: 1.2em;
+            overflow:scroll;
          }
       }
    }
