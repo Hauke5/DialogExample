@@ -8,8 +8,8 @@ cd ./$Bundle
 cp -R $(dirname $0)/../@hauke5/$bundle/ ./
 
 npm i
-# cp -R ./node_modules/@hauke5/utils/lib ./
-# cp -R ./node_modules/@hauke5/nextjs-utils/lib ./
+cp -R ./node_modules/@hauke5/utils/lib ./
+cp -R ./node_modules/@hauke5/nextjs-utils/lib ./
 npm run build
 echo "point a browser to http://localhost:3000/example
 npm start
