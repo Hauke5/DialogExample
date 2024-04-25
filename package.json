@@ -14,6 +14,11 @@
       "type": "git",
       "url": "git+https://github.com/Hauke5/Dialog.git"
    },
+   "keywords": [
+      "NextJS Component",
+      "React Component",
+      "Dialog",
+   ],
    "scripts": {
       "dev": "./node_modules/.bin/next dev -p 3010",
       "build": "next build",
