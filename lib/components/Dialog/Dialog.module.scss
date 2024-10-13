@@ -1,6 +1,6 @@
 $minInputWidth:      100px;
 $borderRadiusOutside: 10px;
-$borderRadius:         5px;
+$borderRadius:         0px;
 
 .dialog {
    position:absolute;
@@ -26,7 +26,12 @@ $borderRadius:         5px;
          border-top-right-radius: $borderRadiusOutside;   
          text-align: left;
       }
+      .description {
+         font-size: 12px;
+         padding: 5px 10px;
+      }
       .contentArea {
+         font-size:14px;
          width: max-content;
          padding: 5px 10px;
          display: grid;
@@ -37,21 +42,24 @@ $borderRadius:         5px;
             display: grid;
             grid-template-columns: subgrid;
             grid-column: 1 / 3;
+            font-weight: normal;
             .elementLabel {
-               font-size:16px;
-               font-weight: normal;
                grid-column: 1 / 2;
                padding-right: 10px;
                padding-left: 10px;
                justify-self: right;
                align-self: center;
             }
-            .elementValue {
-               font-size:16px;
-               font-weight: normal;
+            .elementValue, .noneValue {
                grid-column: 2 / 3;
                justify-self: left;
                align-self: center;
+            }
+            .elementValue {
+               margin-top: 3px;
+            }
+            .noneValue {
+               color: #006;
             }
          }
          &>* {
@@ -108,7 +116,7 @@ $borderRadius:         5px;
             }
          }
          .disabled, .disabled input {
-            color: #ccc;
+            color: #aaa;
             &>div { border: none;}
             border: none;
          }

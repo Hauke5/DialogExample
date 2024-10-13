@@ -1,7 +1,7 @@
 'use client'
 import { ChangeEvent, useState }  
                      from 'react';
-import { date }      from '@/lib/utils';
+import { formatDate }      from '@/lib/utils';
 import styles        from './Input.example.module.scss'
 import { Input }     from './Input';
 
@@ -50,7 +50,7 @@ export function InputExample() {
       </div>
       <div className={styles.row}>
          <span style={titleStyle}>{`Input Date:`}</span>
-         <span style={valueStyle}>{date('%MM/%DD/%YY', currDate)}</span>
+         <span style={valueStyle}>{formatDate('%MM/%DD/%YY', currDate)}</span>
          <Input type='date' onChange={dateUpdate} value={new Date()} className={styles.field}/>
       </div>
       <div className={styles.row}>

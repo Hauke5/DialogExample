@@ -1,9 +1,9 @@
 'use client'
 import { useState }     from "react"
-import { DialogConfig, DialogReturn, ItemsLiteral, OpenDialog } 
+import { DlgReturn, ItemsLiteral, OpenDialog } 
                         from "@/lib/components/Dialog";
 import styles           from './page.module.scss'
-import { Example }      from "./page";
+import { DialogReturn, Example }      from "./page";
 
 
 const textfieldHistoryDefault = [
@@ -21,15 +21,41 @@ export function useDialogWithSideEffects():Example {
    }
 
    async function processDialog(open:OpenDialog):Promise<DialogReturn> {
-      const result = await open(config(textFieldHistory))
-      if (result.actionName===keys.okButton)
+      const result = await open({
+         title: `Dialog Example With Side-Effects:`,
+         items:[
+            {id:'Date',      type:'date',   initial: new Date() },
+            {id:'Number',    type:'number', initial: 0,   label:'Enter Valid Number:',  sideEffect:(value:number, items) => 
+               items.Text.isDefault
+                  ? {Text:(value !== 0)? 'valid number' : 'invalid number' }
+                  : {}
+            },
+            {id:'Text',      type:'text',   initial: 'invalid', list:textFieldHistory},
+            {id:'Checkbox',  type:'boolean',initial: false},
+            {id:'List',      type:'select', initial: 'two',     list:['one', 'two', 'three']},
+         ],
+         buttons:[
+            {id:'Ok', disable:(values) => values.Number.value===0}, 
+         ]
+      })
+      if (result.actionName==='Ok')
+
       setTextFieldHistory((list:string[]) => {
-         const val = result.items[keys.textField].value as string
-         if (!list.includes(val))
-            list.push(val)
+         const val = result.items.Text.value as string
+         if (!list.includes(val)) list.push(val)
          return list.slice()
       })
-      return result
+
+      return {
+         actionName: result.actionName==='Ok'? 'ok' : 'unknown',
+         items:  [
+            { id: result.items.Date.id,      value: `${result.items.Date.value}`},
+            { id: result.items.Number.id,    value: `${result.items.Number.value}`},
+            { id: result.items.Text.id,      value: `${result.items.Text.value}`},
+            { id: result.items.Checkbox.id,  value: `${result.items.Checkbox.value}`},
+            { id: result.items.List.id,      value: `${result.items.List.value}`},
+         ]
+      }
    }
 }
 
@@ -50,60 +76,22 @@ const instructions = <ul className={styles.instructions}>
 </ul>
 
 
-const keys = {
-   okButton:      'Ok',
-   dateField:     'Date',
-   numberField:   'Number', 
-   textField:     'Text',
-   checkBoxField: 'Checkbox',
-   listField:     'List',
-}
-
-const config = (textfieldHistory:string[]):DialogConfig => ({
-   title: `Dialog Example With Side-Effects:`,
-   items:[
-      {[keys.dateField]:{type:'date',   initial: new Date() }},
-      {[keys.numberField]:{type:'number', initial: 0,         label:'Enter Valid Number:',  sideEffect:numChanged}},
-      {[keys.textField]:{type:'text',   initial: 'invalid', list:textfieldHistory}},
-      {[keys.checkBoxField]:{type:'boolean',initial: false}},
-      {[keys.listField]:{type:'select', initial: 'two',     list:['one', 'two', 'three']}},
-   ],
-   buttons:[
-      {[keys.okButton]: {disable:isOKDisabled}}, 
-   ]
-})
-
-function isOKDisabled(values:ItemsLiteral) {
-   return values[keys.numberField].value===0
-}
-function numChanged(value:number, items:ItemsLiteral):{[key:string]:any} {
-   const textItem = items[keys.textField]
-   return textItem.isDefault
-      ? {[keys.textField]:(value !== 0)? 'valid number' : 'invalid number' }
-      : {}
-}
-
 const configText = `{
    title: 'Dialog Example With Side-Effects:',
    items:[
-      { Date:     {type:'date',   initial: new Date() }},
-      { Number:   {type:'number', initial: 0,         label:'Enter Valid Number:',  sideEffect:numChanged}},
-      { Text:     {type:'text',   initial: 'invalid', list:textfieldHistory}},
-      { Chackbox: {type:'boolean',initial: false}},
-      { List:     {type:'select', initial: 'two',     list:['one', 'two', 'three']}},
+      {id:'Date',      type:'date',   initial: new Date() },
+      {id:'Number',    type:'number', initial: 0,   label:'Enter Valid Number:',  sideEffect:(value:number, items) => 
+         items.Text.isDefault
+            ? {Text:(value !== 0)? 'valid number' : 'invalid number' }
+            : {}
+      },
+      {id:'Text',      type:'text',   initial: 'invalid', list:textFieldHistory},
+      {id:'Checkbox',  type:'boolean',initial: false},
+      {id:'List',      type:'select', initial: 'two',     list:['one', 'two', 'three']},
    ],
    buttons:[
-      {[keys.okButton]: {disable:isOKDisabled}}, 
+      {id:'Ok', disable:(values) => values.Number.value===0}, 
    ]
 }
-
-function isOKDisabled(values:ItemsLiteral) {
-   return values.Number.value===0
-}
-
-function numChanged(value:number, values:ItemsLiteral):{[key:string]:any} {
-   return values.Text.isDefault
-      ? {Text: value!==0? 'valid number' : 'invalid number' }
-      : {}
-}
 `
+

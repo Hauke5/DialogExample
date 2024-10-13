@@ -1,108 +1,96 @@
 'use client'
-import { ReactNode }    from "react"
-import { InputDataType, InputType } 
-                        from "../Input/Input";
+import { ReactNode }       from "react"
+import { InputDataType }   from "../Input/Input";
 
 
-export type OpenDialog = (dialogConfig:DialogConfig)=>Promise<DialogReturn>
+export type OpenDialog = <BUTTON_NAMES, ITEM_NAMES>(dialogConfig:DlgConfig<BUTTON_NAMES, ITEM_NAMES>)
+   => Promise<DlgReturn<BUTTON_NAMES, ITEM_NAMES>>
 
-export type DialogConfig = {
-   title:      string;
-   items:      {[elementName:string]:DialogItemConfig}[]
-   buttons:    {[buttonName:string]: DialogButtonConfig}[]
+
+export type DlgConfig<BUTTON_NAMES, ITEM_NAMES> = {
+   title:         string
+   description?:  ReactNode
+   items:         DialogItemConfig<ITEM_NAMES>[]
+   buttons:       (DialogButtonConfig<BUTTON_NAMES, ITEM_NAMES>|null)[]
 }
 
-type DialogItemBaseConfig<RESULT extends InputDataType=InputDataType> = {
+export type DlgReturn<BUTTON_NAMES, ITEM_NAMES> = {
+   actionName?:   keyof BUTTON_NAMES
+   items:         {[property in keyof ITEM_NAMES]:DialogItemResult<ITEM_NAMES>}
+   value:         <TYPE extends InputDataType>(property:keyof ITEM_NAMES)=>TYPE
+}
+
+export type DialogButtonConfig<BUTTON_NAMES, ITEM_NAMES> = {
+   id:            keyof BUTTON_NAMES
+   /** a function returning `true` if the element should be disabled */
+   disable?:      boolean | ((items:ItemsLiteral<ITEM_NAMES>)=>boolean)
    /** the display label shown in the dialog; defaults to `key` */
    label?:        ReactNode
+}
+type DialogItemBaseConfig<ITEM_NAMES, ITEM_TYPE> = DialogButtonConfig<ITEM_NAMES, ITEM_NAMES> & {
+   id:            keyof ITEM_NAMES
+   type:          ITEM_TYPE
    /** the value to initialize the dialog */
-   initial?:      RESULT 
-   /** a function returning `true` if the element should be disabled */
-   disable?:      Disable   
+   initial?:      InputDataType 
    /** 
     * optional, will be called when changes occur to one dialog element. 
     * This function can trigger updates on other dialog elements that depend on this element 
     */
-   sideEffect?:   SideEffect<RESULT>
+   sideEffect?:   (value:InputDataType, values:ItemsLiteral<ITEM_NAMES>)=>{[Property in keyof ITEM_NAMES]?:InputDataType}
+   /** optional array of strings that provide a suggestion drop-down for text/select/file inputs  */
+   list?:         ITEM_TYPE extends 'text'|'select'|'file'? (string[] | (() => string[])) : undefined
 }
-type DialogItemNumberConfig = DialogItemBaseConfig<number> & {
-   type:    'number'
-}
-type DialogItemBooleanConfig = DialogItemBaseConfig<boolean> & {
-   type:    'boolean'
-}
-export type DialogItemTextConfig = DialogItemBaseConfig<string> & {
-   type:    'text'
-   /** optional array of strings that provide a suggestion drop-down for text inputs  */
-   list?:   string[] | (() => string[])
-}
-type DialogItemDateConfig = DialogItemBaseConfig<Date> & {
-   type:    'date'
-}
-type DialogItemSelectConfig = DialogItemBaseConfig<string> & {
-   type:    'select'
-   /** optional array of strings that provide a drop-down for available selections  */
-   list:    string[] | (() => string[])
-}
-type DialogItemFileConfig = DialogItemBaseConfig<string> & {
-   type:    'file'
-   /** optional array of file extensions for File Dialogs */
-   list?:   string[]
-}
-export type DialogItemConfig = DialogItemNumberConfig | DialogItemBooleanConfig | DialogItemTextConfig
-                      | DialogItemDateConfig | DialogItemSelectConfig | DialogItemFileConfig
+type DialogItemNumberConfig<ITEM_NAMES>   = DialogItemBaseConfig<ITEM_NAMES, 'number'> 
+type DialogItemBooleanConfig<ITEM_NAMES>  = DialogItemBaseConfig<ITEM_NAMES, 'boolean'> 
+type DialogItemDateConfig<ITEM_NAMES>     = DialogItemBaseConfig<ITEM_NAMES, 'date'>
+type DialogItemTextConfig<ITEM_NAMES>     = DialogItemBaseConfig<ITEM_NAMES, 'text'>
+type DialogItemSelectConfig<ITEM_NAMES>   = DialogItemBaseConfig<ITEM_NAMES, 'select'> 
+type DialogItemFileConfig<ITEM_NAMES>     = DialogItemBaseConfig<ITEM_NAMES, 'file'>
+type DialogItemNoneConfig<ITEM_NAMES>     = DialogItemBaseConfig<ITEM_NAMES, 'none'>      // a non-editable field
+type DialogItemConfig<ITEM_NAMES> = 
+   DialogItemNumberConfig<ITEM_NAMES> | 
+   DialogItemBooleanConfig<ITEM_NAMES> | 
+   DialogItemTextConfig<ITEM_NAMES> |
+   DialogItemDateConfig<ITEM_NAMES> | 
+   DialogItemSelectConfig<ITEM_NAMES> | 
+   DialogItemFileConfig<ITEM_NAMES> |
+   DialogItemNoneConfig<ITEM_NAMES>
 
 
-export type DialogButtonConfig = {
-   disable?:      Disable
-   /** the display label shown in the dialog; defaults to `key` */
-   label?:        ReactNode
-}
+type ItemType = 'number' | 'boolean' | 'text' | 'date' | 'select' | 'file'
 
-type DialogItemBase<RESULT extends InputDataType=InputDataType> = {
+type DialogResultBase = {
    key:           string
-   label:         ReactNode
-   initial:       RESULT | undefined
-   value:         RESULT
+   value:         InputDataType
    isDefault:     boolean
-   disable:       Disable   
-   sideEffect:    SideEffect
-   list:          string[] | (() => string[])
 }
-type DialogItemNumber   = DialogItemBase<number>   & {type: 'number'}
-type DialogItemBoolean  = DialogItemBase<boolean>  & {type: 'boolean'}
-type DialogItemText     = DialogItemBase<string>   & {type: 'text'}
-type DialogItemDate     = DialogItemBase<Date>     & {type: 'date'}
-type DialogItemSelect   = DialogItemBase<string>   & {type: 'select'}
-type DialogItemFile     = DialogItemBase<string>   & {type: 'file'}
-export type DialogItem = DialogItemNumber | DialogItemBoolean | DialogItemText
-                      | DialogItemDate | DialogItemSelect | DialogItemFile
+type DialogItemBase<ITEM_NAMES, ITEM_TYPE extends ItemType> = 
+   DialogResultBase & Required<DialogItemBaseConfig<ITEM_NAMES, ITEM_TYPE>>
+   
+
+type DialogItemNumber<ITEM_NAMES>   = DialogItemBase<ITEM_NAMES, 'number'>
+type DialogItemBoolean<ITEM_NAMES>  = DialogItemBase<ITEM_NAMES, 'boolean'>
+type DialogItemText<ITEM_NAMES>     = DialogItemBase<ITEM_NAMES, 'date'>
+type DialogItemDate<ITEM_NAMES>     = DialogItemBase<ITEM_NAMES, 'text'> 
+type DialogItemSelect<ITEM_NAMES>   = DialogItemBase<ITEM_NAMES, 'select'>
+type DialogItemFile<ITEM_NAMES>     = DialogItemBase<ITEM_NAMES, 'file'>
+export type DialogItemResult<ITEM_NAMES> = 
+   DialogItemNumber<ITEM_NAMES> | 
+   DialogItemBoolean<ITEM_NAMES> | 
+   DialogItemText<ITEM_NAMES> | 
+   DialogItemDate<ITEM_NAMES> | 
+   DialogItemSelect<ITEM_NAMES> | 
+   DialogItemFile<ITEM_NAMES>
 
 
-export type DialogDesc = {
-   class?:     string;
-   style?:     string;
-   title:      string;
-   items:      DialogItem[]
-   buttons:    {[buttonName:string]: DialogButtonConfig}[]
-}
-
-export type ItemsResultLiteral = { [key:string]: DialogItemResult } 
-export type ItemsLiteral = { [key:string]: DialogItem } 
-
-type SideEffect<RESULT extends InputDataType=InputDataType> = (value:RESULT, values:ItemsLiteral)=>{[key:string]:any}
-
-export type Disable = (values:ItemsLiteral)=>boolean
-
-export type DialogReturn = {
-   actionName?:   string
-   items:         ItemsResultLiteral
+export type DialogDesc<BUTTON_NAMES, ITEM_NAMES> = {
+   title:         string;
+   description?:  ReactNode
+   items:         DialogItemResult<ITEM_NAMES>[]
+   buttons:       DialogButtonConfig<BUTTON_NAMES, ITEM_NAMES>[]
+   class?:        string;
+   style?:        string;
 }
 
-export type DialogItemResult<RESULT extends InputDataType=InputDataType> = {
-   value:      RESULT | undefined
-   isDefault:  boolean
-   type:       InputType
-}
-
+export type ItemsLiteral<ITEM_NAMES>   = { [Property in keyof ITEM_NAMES]: DialogItemResult<ITEM_NAMES> } 
 

@@ -1,39 +1,31 @@
+'use client'
 import { MouseEvent, useEffect, useRef, useState, useTransition }    
                                  from "react"
 import { Rerender, useRerender } from "@/lib/hooks/useRerender"
 import { BaseProps }             from "@/lib/components/BaseProps"
-import { Input }                 from "@/lib/components/Input/Input"
-import styles                    from './Dialog.module.scss'
-import { DialogConfig, DialogButtonConfig,  DialogReturn, DialogDesc, DialogItem, OpenDialog, ItemsLiteral, DialogItemTextConfig, ItemsResultLiteral }   
+import { Input, InputDataType }  from "@/lib/components/Input/Input"
+import { ErrorBoundary }         from "@/lib/errors"
+import { DlgConfig, DialogButtonConfig,  DlgReturn, DialogDesc, DialogItemResult, ItemsLiteral }   
                                  from './DialogTypes'
+import styles                    from './Dialog.module.scss'
 
 const OFF_SCREEN = -10000
 
 export const cancelButton = 'Cancel'
 
-type DialogProps = BaseProps & {
-   open:  (openDialog:OpenDialog)=>void
-}
-
-
-export type DialogItemHandlerProps = {
-   item:       DialogItem
-   dialog:     DialogDesc
-   rerender:   Rerender
-   act:        (action:string)=>void
-}
-
 export function addDialogItemHandler(handle:string, handler:DialogItemHandler) {
    dialogItemHandlers[handle] = handler
 }
 
-type DialogItemHandler = (props: DialogItemHandlerProps) => JSX.Element
-type DialogItemHandlers = {
-   [type:string]: DialogItemHandler
-}
 const dialogItemHandlers:DialogItemHandlers = {
-   // defaut handler, supports 'number', 'date', 'boolean', 'select', 'text', and 'file' on client side
-   default: DialogItemHandler
+   'none':  dialogItemNoneHandler,
+   default: dialogItemDefaultHandler
+}
+
+type DialogProps<BUTTON_NAMES, ITEM_NAMES> = BaseProps & {
+   open: <B = BUTTON_NAMES, I = ITEM_NAMES>(openDialog:(dialogConfig:DlgConfig<B, I>)=>Promise<DlgReturn<B, I>>)=>void
+   x0?:  number
+   y0?:  number
 }
 
 /**
@@ -75,7 +67,7 @@ const dialogItemHandlers:DialogItemHandlers = {
  * const updateButton = 'Update'
  * const content = {
  *    title: `Example Dialog:`,
- *    elements:[
+ *    items:[
  *       {[volumeKey]: { type:'number', initial,  label: 'Volume:' }},
  *    ],
  *    buttons:[
@@ -83,80 +75,98 @@ const dialogItemHandlers:DialogItemHandlers = {
  *    ]
  * }
  * ```
+ * ### Parameters
+ * - `open` the hook to call to open the dialog
+ * - `x0` the initial x position in position in pixels
+ * - `y0` the initial y position in position in pixels
  */
-export function Dialog({open}:DialogProps) {
-   const ref            = useRef<HTMLDialogElement>(null)
-   const rerender       = useRerender()
-   const [ct, setCT]    = useState<DialogDesc>()
-   const response       = useRef<(value: DialogReturn) => void>()
-   const [pos, setPos]  = useState({x:100, y:100, _x:-10000, _y:-10000})
+export function Dialog<BUTTON_NAMES, ITEM_NAMES>({open, x0=100, y0=100}:DialogProps<BUTTON_NAMES, ITEM_NAMES>) {
+   const ref                  = useRef<HTMLDialogElement>(null)
+   const rerender             = useRerender()
+   const [config, setConfig]  = useState<DialogDesc<BUTTON_NAMES, ITEM_NAMES>>()
+   const [pos, setPos]        = useState({x:x0, y:y0, _x:-10000, _y:-10000})
+   const act                  = useRef<(actionName:keyof BUTTON_NAMES)=>void>((actionName:keyof BUTTON_NAMES)=>undefined)
 
    // run once to provide opening hook to caller
-   useEffect(()=>{ open(openWithContent) },[open])
+   useEffect(()=>{ 
+      /**
+       * Opens a modal dialog with the provided content 
+       * and sets up a response resolution
+       * @param content 
+       * @returns 
+       */
+      open(async function openWithContent(dialogConfig:DlgConfig<BUTTON_NAMES, ITEM_NAMES>):Promise<DlgReturn<BUTTON_NAMES, ITEM_NAMES>> {
+         ref.current?.showModal()
+         // initialize dialog with defaults, keep other values from prior dialog call
+         const dialogItems:DialogItemResult<ITEM_NAMES>[] = dialogConfig.items.map(item => {
+            return {
+               id:       item.id,
+               type:       item.type,
+               label:      item.label ?? item.id,
+               isDefault:  true,
+               initial:    item.initial as typeof item.type,
+               value:      item.initial as typeof item.type,
+               disable:    item.disable ?? (()=>false),
+               sideEffect: item.sideEffect ?? (()=>[]),
+               list:       item.list ?? [],
+            } as DialogItemResult<ITEM_NAMES>
+         })
+         const dialogDesc:DialogDesc<BUTTON_NAMES, ITEM_NAMES> = {
+            title:         dialogConfig.title,
+            items:         dialogItems,
+            buttons:       dialogConfig.buttons.filter(b => b!==null), 
+            description:   dialogConfig.description   
+         }
+         setConfig(dialogDesc)
+         return new Promise<DlgReturn<BUTTON_NAMES, ITEM_NAMES>>
+            ((resolve:(value: DlgReturn<BUTTON_NAMES, ITEM_NAMES>) => void) => {
+               const ct = dialogDesc
+               /** 
+                * called when Dialog signals a resulting `action` being called. Thus ia usually triggered by one of the dialog buttons,
+                * but can also originate elsewhere, e.g. when double clicking on a file 
+                */
+               act.current = (actionName:keyof BUTTON_NAMES) => {
+                  // close the dialog box
+                  ref.current?.close()
+                  const items = Object.fromEntries((ct?ct.items : []).map(item => [item.id, item])) as {[property in keyof ITEM_NAMES]:DialogItemResult<ITEM_NAMES>}
+                  // respond to open call with the result
+                  resolve({
+                     actionName:actionName as keyof BUTTON_NAMES, 
+                     items,
+                     value: <TYPE extends InputDataType>(property:keyof ITEM_NAMES) => {
+                        const item = items[property] as DialogItemResult<ITEM_NAMES>
+                        if (!items) throw Error(`undefined item name '${String(property)}' `)
+                        return item.value as TYPE
+                     }
+                  })
+               }
+            })
+      })
+   },[open, config])
 
    const style = {top: pos.y, left: pos.x}
-   return <dialog ref={ref} style={style} className={styles.dialog} onMouseMove={duringMove} onMouseUp={endMove}>
-      {ct && <div className={styles.content}>
-         <div className={styles.contentTitle} onMouseDown={startMove}>{ct?.title}</div>
-         <div className={styles.contentArea}> 
-            {ct.items.map(item => { 
-               const Handler = dialogItemHandlers[item.type] ?? dialogItemHandlers.default
-               return <Handler item={item} dialog={ct} key={item.key} rerender={rerender} act={act}/>
-            })}
-         </div>
-         <div className={styles.buttonArea}>  
-            {ct?.buttons?.map(b => {
-               const [name, button] = Object.entries(b)[0]
-               return <DlgButton name={name} button={button} act={act} dialog={ct} key={`btn_${rerender.count()}_${name}`}/>
-            })}
-            <button onClick={()=>act(cancelButton)} className={styles.cancel}>{cancelButton}</button>
-         </div>
-      </div>}
-   </dialog>
-
-   /**
-    * Opens a modal dialog with the provided content 
-    * and sets up a response resolution
-    * @param content 
-    * @returns 
-    */
-   async function openWithContent(content:DialogConfig):Promise<DialogReturn> {
-      ref.current?.showModal()
-      // initialize dialog with defaults, keep other values from prior dialog call
-      const dialogItems:DialogItem[] = content.items.map(dialogItem => {
-         const [key, item] = Object.entries(dialogItem)[0]
-         return {
-            key,
-            type:       item.type,
-            label:      item.label ?? key,
-            isDefault:  true,
-            initial:    item.initial as typeof item.type,
-            value:      item.initial as typeof item.type,
-            disable:    item.disable ?? (()=>false),
-            sideEffect: item.sideEffect ?? (()=>({})),
-            list:       (item as DialogItemTextConfig).list ?? [],
-         } as DialogItem
-      })
-      const dialogDesc = {
-         title:      content.title,
-         items:      dialogItems,
-         buttons:    content.buttons,    
-      }
-      setCT(dialogDesc)
-      return new Promise<DialogReturn>((resolve) => response.current = resolve)
-   }
-
-   /** 
-    * called when Dialog signals a resulting `action` being called. Thus ia usually triggered by one of the dialog buttons,
-    * but can also originate elsewhere, e.g. when double clicking on a file 
-    */
-   function act(actionName:string) {
-      // close the dialog box
-      ref.current?.close()
-      const items = ct? itemsResultLiteral(ct?.items) : {}
-      // respond to open call with the result
-      response.current?.({actionName, items})
-   }
+   const hasCancel = !!config?.buttons?.find(b => Object.keys(b)[0]===cancelButton)
+   return <ErrorBoundary>
+      <dialog ref={ref} style={style} className={styles.dialog} onMouseMove={duringMove} onMouseUp={endMove}>
+         {config && <div className={styles.content}>
+            <div className={styles.contentTitle} onMouseDown={startMove}>{config?.title}</div>
+            {config?.description && <div className={styles.description}>{config.description}</div>}
+            <div className={styles.contentArea}> 
+               {config.items.map((item, i) => { 
+                  const Handler = dialogItemHandlers[item.type] ?? dialogItemHandlers.default
+                  return <Handler item={item} dialog={config} key={`${i}`} rerender={rerender} act={act.current}/>
+               })}
+            </div>
+            <div className={styles.buttonArea}>  
+               {config?.buttons?.map(button => {
+                  const name = button.id
+                  return !!button && <DlgButton name={name} button={button} act={act.current} dialog={config} key={`btn_${rerender.count()}_${String(name)}`}/>
+               })}
+               {!hasCancel && <button onClick={()=>act.current(cancelButton as keyof typeof act.current)} className={styles.cancel}>{cancelButton}</button>}
+            </div>
+         </div>}
+      </dialog>
+   </ErrorBoundary>
 
    function startMove(e:MouseEvent) {
       if (pos._x<=OFF_SCREEN) setPos({x:pos.x, y:pos.y, _x:e.clientX-pos.x, _y:e.clientY-pos.y})
@@ -172,15 +182,10 @@ export function Dialog({open}:DialogProps) {
    }
 }
 
-function itemsResultLiteral(items:DialogItem[]):ItemsResultLiteral {
-   return Object.fromEntries(items.map(item => [item.key, {
-      value:      item.value,
-      isDefault:  item.isDefault,
-      type:       item.type,
-   }]))
-}
-function itemsLiteral(items:DialogItem[]):ItemsLiteral {
-   return Object.fromEntries(items.map(item => [item.key, item]))
+function itemsLiteral<ITEM_NAMES>(items:DialogItemResult<ITEM_NAMES>[]):ItemsLiteral<ITEM_NAMES> {
+   const result = {} as {[Property in keyof ITEM_NAMES]: any}
+   items.forEach(item => result[item.id] = item)
+   return result
 }
 
 /** 
@@ -188,8 +193,8 @@ function itemsLiteral(items:DialogItem[]):ItemsLiteral {
  * Implements the types 'number', 'date', 'boolean', 'select', 'text'; 
  * and treats any other types as 'text'.
  */
-function DialogItemHandler({item, dialog, rerender}:{item:DialogItem, dialog: DialogDesc, rerender:Rerender, act:(action:string)=>void}) {
-   const disabled = item.disable(itemsLiteral(dialog.items)) ?? false
+function dialogItemDefaultHandler<BUTTON_NAMES, ITEM_NAMES>({item, dialog, rerender}:{item:DialogItemResult<ITEM_NAMES>, dialog: DialogDesc<BUTTON_NAMES, ITEM_NAMES>, rerender:Rerender}) {
+   const disabled = typeof item.disable==='boolean'? item.disable :  item.disable(itemsLiteral(dialog.items)) ?? false
    const classNameLabel = `${styles.elementLabel} ${disabled?styles.disabled:''}`
    const classNameValue = `${styles.elementValue} ${disabled?styles.disabled:styles.editable}`
    const label = item.label ?? item.key
@@ -212,26 +217,40 @@ function DialogItemHandler({item, dialog, rerender}:{item:DialogItem, dialog: Di
       rerender()
    }
 }
+/** 
+ * `None` dialog item implementation.
+ * Implements the type 'none'; 
+ */
+function dialogItemNoneHandler<BUTTON_NAMES, ITEM_NAMES>({item, dialog}:{item:DialogItemResult<ITEM_NAMES>, dialog: DialogDesc<BUTTON_NAMES, ITEM_NAMES>, rerender:Rerender}) {
+   const disabled = typeof item.disable==='boolean'? item.disable :  item.disable(itemsLiteral(dialog.items)) ?? false
+   const classNameLabel = `${styles.elementLabel} ${disabled?styles.disabled:''}`
+   const classNameValue = `${styles.noneValue} ${disabled?styles.disabled:''}`
+   const label = item.label ?? item.key
+   return <div className={styles.dialogItem}>
+      <span className={classNameLabel}>{label}</span>
+      <span  className={classNameValue}>{`${item.value}`}</span>
+   </div>
+}
 
-export function doSideEffect(item:DialogItem, items:DialogItem[]) {
+export function doSideEffect<ITEM_NAMES>(item:DialogItemResult<ITEM_NAMES>, items:DialogItemResult<ITEM_NAMES>[]) {
    const changes = item.sideEffect?.(item.value, itemsLiteral(items)) ?? {}
-   for (const key in changes) {
-      const elmt = items.find(el => el.key===key)
-      if (elmt?.isDefault) elmt.value = changes[key]
+   for (const name in changes) {
+      const elmt = items.find(el => el.id===name)
+      if (elmt?.isDefault && changes[name]!==undefined) elmt.value = changes[name]
    }
 }
 
-type DlgButtonProps = {
-   name:    string
-   button:  DialogButtonConfig
-   dialog:  DialogDesc
-   act:     (action:string)=>void
+type DlgButtonProps<BUTTON_NAMES, ITEM_NAMES> = {
+   name:    keyof BUTTON_NAMES
+   button:  DialogButtonConfig<BUTTON_NAMES, ITEM_NAMES>
+   dialog:  DialogDesc<BUTTON_NAMES, ITEM_NAMES>
+   act:     (action:keyof BUTTON_NAMES)=>void
 }
-function DlgButton({name, button, dialog, act}:DlgButtonProps) {
+function DlgButton<BUTTON_NAMES, ITEM_NAMES>({name, button, dialog, act}:DlgButtonProps<BUTTON_NAMES, ITEM_NAMES>) {
    const [isPending, startTransition] = useTransition();
-   const disabled = button.disable?.(itemsLiteral(dialog.items))
+   const disabled = typeof button.disable==='boolean'? button.disable : button.disable?.(itemsLiteral(dialog.items))
 
-   return <button onClick={e=>disabled?'':click(e)} disabled={isPending||disabled}>{name}</button>
+   return <button onClick={e=>disabled?'':click(e)} disabled={isPending||disabled}>{name as string}</button>
    
    async function click(e:MouseEvent) {
       e.preventDefault()
@@ -239,6 +258,31 @@ function DlgButton({name, button, dialog, act}:DlgButtonProps) {
    }
 }
 
-// const mapFromElements = (dialog:  DialogDesc) => 
-//    Object.fromEntries(new Map<string,ExtendedElement>(dialog.items.map(item => [item.key, item])))
 
+
+
+export type DialogItemHandlerProps<BUTTON_NAMES, ITEM_NAMES> = {
+   item:       DialogItemResult<ITEM_NAMES>
+   dialog:     DialogDesc<BUTTON_NAMES, ITEM_NAMES>
+   rerender:   Rerender
+   act:        (action:any)=>void
+}
+
+type DialogItemHandler = <BUTTON_NAMES, ITEM_NAMES>(props: DialogItemHandlerProps<BUTTON_NAMES, ITEM_NAMES>) => JSX.Element
+type DialogItemHandlers = {
+   [type:string]: DialogItemHandler
+}
+
+
+
+
+
+
+// const test = {
+//    button: {Ok: true}
+// }
+
+// function testFn<Button>(test:Button) {
+// }
+
+// testFn(test)

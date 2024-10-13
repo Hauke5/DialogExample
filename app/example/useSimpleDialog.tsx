@@ -1,8 +1,8 @@
 'use client'
-import { DialogConfig, DialogReturn, OpenDialog } 
+import { DlgReturn, OpenDialog } 
                      from "@/lib/components/Dialog";
 import styles        from './page.module.scss'
-import { Example }   from "./page";
+import { DialogReturn, Example }   from "./page";
 
 
 export function useSimpleDialog():Example {
@@ -14,7 +14,21 @@ export function useSimpleDialog():Example {
    }
 
    async function processDialog(open:OpenDialog):Promise<DialogReturn> {
-      return await open(simpleDialogConfig)
+      const result = await open({
+         title: `Simple Dialog Example:`,
+         items:[
+            { id:'ValidNumber', type:'number', initial: 0, label:'Enter Valid Number'},
+         ],
+         buttons:[
+            { id:'OK' }, 
+         ]
+      })
+      return {
+         actionName: result.actionName==='OK'? 'ok' : 'unknown',
+         items:  [
+            { id: result.items.ValidNumber.id, value: result.items.ValidNumber.value as string},
+         ]
+      }
    }
 }
 
@@ -27,22 +41,13 @@ const instructions = <ul className={styles.instructions}>
    The left box below will reflect the values from the dialog.</li>
 </ul>
 
-const simpleDialogConfig:DialogConfig = {
-   title: `Simple Dialog Example:`,
-   items:[
-      { 'Enter Valid Number': { type:'number', initial: 0}},
-   ],
-   buttons:[
-      { OK: {}}, 
-   ]
-}
 
 const configText = `{
    title: 'Simple Dialog Example:',
    items:[
-      { 'Enter Valid Number': { type:'number', initial: 0 }},
+      { id:'ValidNumber', type:'number', initial: 0, label:'Enter Valid Number'},
    ],
    buttons:[
-      { OK: {}}, 
+      { id:'OK' }, 
    ]
 }`

@@ -1,7 +1,7 @@
 'use client'
-import { ReactNode, useEffect, useRef, useState }    
+import { ReactNode, useEffect, useRef, useState }                
                                     from "react"
-import { Dialog, DialogReturn, OpenDialog } 
+import { Dialog, DlgReturn, OpenDialog } 
                                     from "@/lib/components/Dialog";
 import styles                       from './page.module.scss'
 import { useDialogWithSideEffects } from "./useDialogWithSideEffects";
@@ -14,22 +14,22 @@ export type Example = {
    processDialog: (open:OpenDialog)=>Promise<DialogReturn>
 }
 
-const voidProcess = async ():Promise<DialogReturn> => ({
-   actionName: '',
-   items:      {}
-})
+
+export type DialogReturn = {
+   actionName: string
+   items: {id:string, value:string}[]
+}
 
 export default function DialogExample() {
    const dlgSimple            = useSimpleDialog()
    const dlgWithSideEffects   = useDialogWithSideEffects()
    const examples             = useRef<Example[]>([
-      {name:'', instructions: <></>, configText: '', processDialog:voidProcess},
       dlgSimple,
       dlgWithSideEffects
    ])
    const [showing, setShowing] = useState(false)
    const openDialog            = useRef<OpenDialog>()
-   const [app, setApp]         = useState(0)
+   const [app, setApp]         = useState(-1)
    const [result, setResult]   = useState<DialogReturn>()
    useEffect(()=>{
       setResult(undefined)
@@ -40,9 +40,9 @@ export default function DialogExample() {
       <Instructions />
       <div className={styles.resultConfig}>
          <DialogResult result={result} showing={showing}/>
-         <DialogConfig configText={examples.current[app].configText}/>
+         <DialogConfig configText={examples.current[app]?.configText}/>
       </div>
-      <Dialog open={open=>openDialog.current=open} />
+      <Dialog open={open=>openDialog.current=open as OpenDialog} />
    </div>
 
    function Intro() {
@@ -57,10 +57,10 @@ export default function DialogExample() {
 
    function Instructions() {
       return <>
-         <h3>{examples.current[app].name}</h3>
-         {examples.current[app].instructions}
+         <h3>{examples.current[app]?.name ?? 'select a dialog above...'}</h3>
+         {examples.current[app]?.instructions}
          <div className={styles.showButton}>
-            {examples.current[app].name && <button onClick={runDialog}>{showing?'Hide Dialog':'Show Dialog'}</button>}
+            {examples.current[app]?.name && <button onClick={runDialog}>{showing?'Hide Dialog':'Show Dialog'}</button>}
          </div>
       </>
    }
@@ -68,7 +68,7 @@ export default function DialogExample() {
 
    async function runDialog() {
       setShowing(true)
-      if (openDialog.current) {
+      if (openDialog.current && examples.current[app]) {
          const result = await examples.current[app].processDialog(openDialog.current)
          setResult(result)
       }
@@ -82,14 +82,15 @@ function DialogResult({result, showing}:{result?:DialogReturn, showing:boolean})
       <div>Dialog is {showing?'showing':'hiding'}</div>
       {result && <div className={styles.row}>
          <span>{`Button pressed: `}</span><span className={styles.item}>{result?.actionName}</span>
-         {Object.entries(result.items).map(([key, item])=> <div className={styles.row} key={key}>
-            <span className={styles.item}>{`${key}:`}</span><span>{` ${item.value}`}</span>
+         {result.items.map(item => <div className={styles.row} key={item.id}>
+            <span className={styles.item}>{`${item.id}:`}</span><span>{` ${item.value}`}</span>
          </div>)}
       </div>}
    </div>
 }
 
-function DialogConfig({configText}:{configText:string}) {
+function DialogConfig({configText}:{configText?:string}) {
+   if (!configText) return <div>...</div>
    return <div className={styles.dialogConfig}>
       <div className={styles.title}>Dialog Configuration:</div>
       <pre className={styles.configText}>{configText}</pre>
