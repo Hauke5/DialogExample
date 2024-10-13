@@ -17,7 +17,7 @@
    "keywords": [
       "NextJS Component",
       "React Component",
-      "Dialog",
+      "Dialog"
    ],
    "scripts": {
       "dev": "./node_modules/.bin/next dev -p 3010",
