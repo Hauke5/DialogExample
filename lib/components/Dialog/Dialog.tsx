@@ -5,7 +5,7 @@ import { Rerender, useRerender } from "@/lib/hooks/useRerender"
 import { BaseProps }             from "@/lib/components/BaseProps"
 import { Input, InputDataType }  from "@/lib/components/Input/Input"
 import { ErrorBoundary }         from "@/lib/errors"
-import { DlgConfig, DialogButtonConfig,  DlgReturn, DialogDesc, DialogItemResult, ItemsLiteral }   
+import { DlgConfig, DialogButtonConfig,  DlgReturn, DialogDesc, DialogItemResult, ItemsLiteral, OpenDialog }   
                                  from './DialogTypes'
 import styles                    from './Dialog.module.scss'
 
@@ -98,7 +98,7 @@ export function Dialog<BUTTON_NAMES, ITEM_NAMES>({open, x0=100, y0=100}:DialogPr
       open(async function openWithContent(dialogConfig:DlgConfig<BUTTON_NAMES, ITEM_NAMES>):Promise<DlgReturn<BUTTON_NAMES, ITEM_NAMES>> {
          ref.current?.showModal()
          // initialize dialog with defaults, keep other values from prior dialog call
-         const dialogItems:DialogItemResult<ITEM_NAMES>[] = dialogConfig.items.map(item => {
+         const dialogItems:DialogItemResult<ITEM_NAMES>[] = (dialogConfig.items??[]).map(item => {
             return {
                id:       item.id,
                type:       item.type,

@@ -1,9 +1,9 @@
 'use client'
 import { useState }     from "react"
-import { DlgReturn, ItemsLiteral, OpenDialog } 
-                        from "@/lib/components/Dialog";
+import { OpenDialog }   from "@/lib/components/Dialog";
 import styles           from './page.module.scss'
-import { DialogReturn, Example }      from "./page";
+import { DialogReturn, Example }      
+                        from "./page";
 
 
 const textfieldHistoryDefault = [
@@ -23,6 +23,21 @@ export function useDialogWithSideEffects():Example {
    async function processDialog(open:OpenDialog):Promise<DialogReturn> {
       const result = await open({
          title: `Dialog Example With Side-Effects:`,
+         description:  <div style={{borderBottom:"1px solid gray"}}>
+            A <b>complex</b> dialog:
+            <ul className={styles.instructions}>
+               <li><b>Hint:</b>You can move the box by dragging it in the title field.</li>
+               <li><b>Side effects</b> within the dialog:</li>
+               <ul className={styles.instructions}>
+                  <li><b>Ok Disabled</b>: Enter a number other than <code>0</code> in the the <code>Number</code> field to enable the <code>Ok</code> button.</li>
+                  <li><b>Field auto-values</b>: Changing the <code>Number</code> field automatically sets the <code>Text</code> field <br/>
+                  to <code>valid</code> or <code>invalid</code> depending on the <code>Number</code> field value, <br/>
+                  unless the user has manually changed it before</li>
+               </ul>
+               <li>Click the <code>Ok</code> button when available. 
+               The left box below will reflect the values from the dialog.</li>
+            </ul>
+         </div>,
          items:[
             {id:'Date',      type:'date',   initial: new Date() },
             {id:'Number',    type:'number', initial: 0,   label:'Enter Valid Number:',  sideEffect:(value:number, items) => 
@@ -30,9 +45,9 @@ export function useDialogWithSideEffects():Example {
                   ? {Text:(value !== 0)? 'valid number' : 'invalid number' }
                   : {}
             },
-            {id:'Text',      type:'text',   initial: 'invalid', list:textFieldHistory},
-            {id:'Checkbox',  type:'boolean',initial: false},
             {id:'List',      type:'select', initial: 'two',     list:['one', 'two', 'three']},
+            {id:'Checkbox',  type:'boolean',initial: false},
+            {id:'Text',      type:'text',   initial: 'invalid', list:textFieldHistory},
          ],
          buttons:[
             {id:'Ok', disable:(values) => values.Number.value===0}, 
@@ -65,11 +80,10 @@ const instructions = <ul className={styles.instructions}>
    </li>
    <li>Side effects within the dialog:</li>
    <ul className={styles.instructions}>
-      <li><b>isOKDisabled():</b> the <code>Ok</code> button will be disabled while 
-      the <code>Number</code> field is <code>0</code></li>
-      <li><b>numChanged():</b> Sets the <code>Text</code> field (<code>isDefault</code> is false)
-      to <code>valid</code> or <code>invalid</code> depending on the <code>Number</code> field value, 
-      unless the user has changed the <code>Text</code> field</li>
+   <li><b>Ok Disabled</b>: Enter a number other than <code>0</code> in the the <code>Number</code> field to enable the <code>Ok</code> button.</li>
+   <li><b>Field auto-values</b>:Changing the <code>Number</code> field automatically sets the <code>Text</code> field 
+         to <code>valid</code> or <code>invalid</code> depending on the <code>Number</code> field value, 
+         unless the user has manually changed it before</li>
    </ul>
    <li>Click the <code>Ok</code> button when available. 
    The left box below will reflect the values from the dialog.</li>
@@ -78,6 +92,21 @@ const instructions = <ul className={styles.instructions}>
 
 const configText = `{
    title: 'Dialog Example With Side-Effects:',
+   description:  <div style={{borderBottom:"1px solid gray"}}>
+      A <b>complex</b> dialog:
+      <ul className={styles.instructions}>
+         <li><b>Hint:</b>You can move the box by dragging it in the title field.</li>
+         <li>Side effects within the dialog:</li>
+         <ul className={styles.instructions}>
+            <li><b>Ok Disabled</b>: Enter a number other than <code>0</code> in the the <code>Number</code> field to enable the <code>Ok</code> button.</li>
+            <li><b>Field auto-values</b>:Changing the <code>Number</code> field automatically sets the <code>Text</code> field 
+            to <code>valid</code> or <code>invalid</code> depending on the <code>Number</code> field value, 
+            unless the user has manually changed it before</li>
+         </ul>
+         <li>Click the <code>Ok</code> button when available. 
+         The left box below will reflect the values from the dialog.</li>
+      </ul>
+   </div>,
    items:[
       {id:'Date',      type:'date',   initial: new Date() },
       {id:'Number',    type:'number', initial: 0,   label:'Enter Valid Number:',  sideEffect:(value:number, items) => 
@@ -92,6 +121,5 @@ const configText = `{
    buttons:[
       {id:'Ok', disable:(values) => values.Number.value===0}, 
    ]
-}
-`
+}`
 

@@ -1,8 +1,7 @@
 'use client'
 import { ReactNode, useEffect, useRef, useState }                
                                     from "react"
-import { Dialog, DlgReturn, OpenDialog } 
-                                    from "@/lib/components/Dialog";
+import { Dialog, OpenDialog }       from "@/lib/components/Dialog";
 import styles                       from './page.module.scss'
 import { useDialogWithSideEffects } from "./useDialogWithSideEffects";
 import { useSimpleDialog }          from "./useSimpleDialog";

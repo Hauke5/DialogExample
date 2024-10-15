@@ -10,13 +10,13 @@ export type OpenDialog = <BUTTON_NAMES, ITEM_NAMES>(dialogConfig:DlgConfig<BUTTO
 export type DlgConfig<BUTTON_NAMES, ITEM_NAMES> = {
    title:         string
    description?:  ReactNode
-   items:         DialogItemConfig<ITEM_NAMES>[]
+   items?:        DialogItemConfig<ITEM_NAMES>[]
    buttons:       (DialogButtonConfig<BUTTON_NAMES, ITEM_NAMES>|null)[]
 }
 
 export type DlgReturn<BUTTON_NAMES, ITEM_NAMES> = {
-   actionName?:   keyof BUTTON_NAMES
-   items:         {[property in keyof ITEM_NAMES]:DialogItemResult<ITEM_NAMES>}
+   actionName?:   keyof BUTTON_NAMES | 'Cancel'
+   items:         ItemsLiteral<ITEM_NAMES>
    value:         <TYPE extends InputDataType>(property:keyof ITEM_NAMES)=>TYPE
 }
 
@@ -36,7 +36,7 @@ type DialogItemBaseConfig<ITEM_NAMES, ITEM_TYPE> = DialogButtonConfig<ITEM_NAMES
     * optional, will be called when changes occur to one dialog element. 
     * This function can trigger updates on other dialog elements that depend on this element 
     */
-   sideEffect?:   (value:InputDataType, values:ItemsLiteral<ITEM_NAMES>)=>{[Property in keyof ITEM_NAMES]?:InputDataType}
+   sideEffect?:   (value:InputDataType, items:ItemsLiteral<ITEM_NAMES>)=>{[Property in keyof ITEM_NAMES]?:InputDataType}
    /** optional array of strings that provide a suggestion drop-down for text/select/file inputs  */
    list?:         ITEM_TYPE extends 'text'|'select'|'file'? (string[] | (() => string[])) : undefined
 }

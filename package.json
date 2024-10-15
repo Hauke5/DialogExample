@@ -1,6 +1,6 @@
 {
    "name": "@hauke5/dialog",
-   "version": "1.0.71",
+   "version": "1.0.95",
    "description": "Provides a standardized dialog box for NextJS",
    "author": {
       "name": "hauke5",
@@ -20,15 +20,14 @@
       "Dialog"
    ],
    "scripts": {
-      "dev": "./node_modules/.bin/next dev",
+      "dev": "next dev",
       "build": "next build",
-      "start": "./node_modules/.bin/next start"
+      "start": "next start -p 3001"
    },
    "dependencies": {
       "next": "^14",
       "next-auth": "^4",
       "@hauke5/utils": "^1",
-      "@hauke5/nextjs-utils": "^1",
       "react": "^18",
       "sass": "^1"
    },
@@ -36,7 +35,7 @@
       "typescript": "^5",
       "@types/node": "^20",
       "@types/react": "^18",
-      "eslint": "^9",
+      "eslint": "^8",
       "eslint-config-next": "^14"
    }
 }
