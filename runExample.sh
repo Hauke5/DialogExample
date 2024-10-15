@@ -15,5 +15,5 @@ cp -R ./node_modules/@hauke5/utils/lib ./
 cp -R ./node_modules/@hauke5/nextjs-utils/lib ./
 npm run build
 echo "point a browser to http://localhost:3001/example/"
-npm start -p 3001
+npm start
 ./
