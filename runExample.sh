@@ -5,7 +5,7 @@ Bundle="Dialog"
 bundle="dialog"
 dirName=$(dirname $0)
 
-env
+echo "NODE_ENV=$NODE_ENV"
 
 echo "running '$0' from $dirName"
 
