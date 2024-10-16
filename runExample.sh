@@ -5,6 +5,8 @@ Bundle="Dialog"
 bundle="dialog"
 dirName=$(dirname $0)
 
+env
+
 echo "running '$0' from $dirName"
 
 cp -R $dirName/ ./
