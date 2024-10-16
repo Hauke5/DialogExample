@@ -7,6 +7,7 @@ dirName=$(dirname $0)
 
 echo "NODE_ENV=$NODE_ENV"
 
+pwd
 echo "running '$0' from $dirName"
 
 cp -R $dirName/ ./
