@@ -1,6 +1,6 @@
 {
    "name": "@hauke5/dialog",
-   "version": "1.0.106",
+   "version": "1.0.107",
    "description": "Provides a standardized dialog box for NextJS",
    "author": {
       "name": "hauke5",
