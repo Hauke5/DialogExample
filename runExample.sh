@@ -6,7 +6,7 @@ bundle="dialog"
 dirName=$(dirname $0)
 
 echo "running '$0' from $dirName"
-
+ 
 cp -R $dirName/ ./
 
 npm i
