@@ -1,14 +1,13 @@
 #!/bin/zsh
-# $(dirname $0) should point to ~/.npm/_npx/.../node_modules/.bin
+# cwd should be the ./Dialog folder
 
 Bundle="Dialog"
 bundle="dialog"
-mkdir -p ./$Bundle
-cd ./$Bundle
+dirName=$(dirname $0)
 
-echo "running from '$0'"
+echo "running '$0' from $dirName"
 
-cp -R $(dirname $0)/../@hauke5/$bundle/ ./
+cp -R $dirName/ ./
 
 npm i
 cp -R ./node_modules/@hauke5/utils/lib ./
