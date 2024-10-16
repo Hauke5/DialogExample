@@ -8,8 +8,7 @@ dirName=$(dirname $0)
 echo "NODE_ENV=$NODE_ENV"
 
 pwd
-echo "running '$0' from $dirName"
-
+echo "copying $dirName to ./"
 cp -R $dirName/ ./
 
 # npm i
