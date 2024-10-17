@@ -9,15 +9,15 @@ dirName=$(dirname $0)
 echo "NODE_ENV=$NODE_ENV"
 
 pwd=$(pwd)
-echo "cwd = $cwd"
-echo "copying ./$dirName to ./"
+echo "cwd = $pwd"
 
-# copy core dialog app
+echo "copying Dialog to ./"
 cp -R $dirName/ ./
-# copy util stuff
-cp -R $dirName/../util/ ./
 
-# npm i
+echo "copying Utils to ./"
+cp -R $dirName/../utils/ ./
+
+npm i
 # cp -R ./node_modules/@hauke5/utils/lib ./
 npm run dev
 # echo "point a browser to http://localhost:3001/example/"
