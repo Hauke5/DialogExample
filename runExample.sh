@@ -19,6 +19,6 @@ cp -R $dirName/../utils/lib/ ./lib/
 
 npm i
 # cp -R ./node_modules/@hauke5/utils/lib ./
-npm run dev
+npm run build
 # echo "point a browser to http://localhost:3001/example/"
 # npm start
