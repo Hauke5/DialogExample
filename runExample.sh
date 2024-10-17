@@ -15,7 +15,7 @@ echo "copying Dialog to ./"
 cp -R $dirName/ ./
 
 echo "copying Utils to ./"
-cp -R $dirName/../utils/ ./
+cp -R $dirName/../utils/lib/ ./lib/
 
 npm i
 # cp -R ./node_modules/@hauke5/utils/lib ./
