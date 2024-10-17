@@ -1,5 +1,6 @@
 #!/bin/zsh
-# cwd should be the ./Dialog folder
+# call from the runtime ./Dialog folder as:
+# ./node_modules/@hauke5/dialog/runExample.sh
 
 Bundle="Dialog"
 bundle="dialog"
@@ -10,7 +11,11 @@ echo "NODE_ENV=$NODE_ENV"
 pwd=$(pwd)
 echo "cwd = $cwd"
 echo "copying ./$dirName to ./"
+
+# copy core dialog app
 cp -R $dirName/ ./
+# copy util stuff
+cp -R $dirName/../util/ ./
 
 # npm i
 # cp -R ./node_modules/@hauke5/utils/lib ./
