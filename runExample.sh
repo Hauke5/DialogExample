@@ -9,13 +9,13 @@ dirName=$(dirname $0)
 echo "NODE_ENV=$NODE_ENV"
 
 pwd=$(pwd)
-echo "cwd = $pwd"
+npmV=$(npm pkg get version)
 
-echo "copying Dialog from $dirName/ to ./"
-cp -R $dirName/ ./
+echo "npm=$npmV, cwd=$pwd"
+
+appDir="./node_modules/@hauke5/$bundle/"
+echo "copying Dialog from $appDir/ to ./"
+cp -R $appDir ./
 
 npm i
-# cp -R ./node_modules/@hauke5/utils/lib ./
 npm run build
-# echo "point a browser to http://localhost:3001/example/"
-# npm start
