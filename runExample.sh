@@ -11,8 +11,8 @@ echo "NODE_ENV=$NODE_ENV"
 pwd=$(pwd)
 echo "cwd = $pwd"
 
-echo "copying Dialog to ./"
-cp $dirName/* ./
+echo "copying Dialog from $dirName/ to ./"
+cp -R $dirName/ ./
 
 npm i
 # cp -R ./node_modules/@hauke5/utils/lib ./
