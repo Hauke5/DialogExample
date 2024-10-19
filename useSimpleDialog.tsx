@@ -1,6 +1,6 @@
 'use client'
 import { DlgReturn, OpenDialog } 
-                     from "@/lib/components/Dialog";
+                     from "@hauke5/components/Dialog";
 import styles        from './page.module.scss'
 import { DialogReturn, Example }   from "./page";
 

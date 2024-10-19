@@ -27,11 +27,11 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/lib/*": [
-        "lib/*"
+      "@hauke5/lib/*": [
+        "lib/*",
       ],
       "@/app/*": [
-        "app/*"
+        "app/*",
       ]
     }
   },

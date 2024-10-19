@@ -1,7 +1,7 @@
 'use client'
 import { ReactNode, useEffect, useRef, useState }                
                                     from "react"
-import { Dialog, OpenDialog }       from "@/lib/components/Dialog";
+import { Dialog, OpenDialog }       from "@hauke5/components/Dialog";
 import styles                       from './page.module.scss'
 import { useDialogWithSideEffects } from "./useDialogWithSideEffects";
 import { useSimpleDialog }          from "./useSimpleDialog";
@@ -11,7 +11,7 @@ export type Example = {
    instructions:  ReactNode,
    configText:    string
    processDialog: (open:OpenDialog)=>Promise<DialogReturn>
-}
+} 
 
 
 export type DialogReturn = {
@@ -19,7 +19,7 @@ export type DialogReturn = {
    items: {id:string, value:string}[]
 }
 
-export default function DialogExample() {
+export function DialogExample() {
    const dlgSimple            = useSimpleDialog()
    const dlgWithSideEffects   = useDialogWithSideEffects()
    const examples             = useRef<Example[]>([

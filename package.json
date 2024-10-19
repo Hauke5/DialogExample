@@ -1,18 +1,10 @@
 {
    "name": "@hauke5/dialog",
-   "version": "1.0.122",
-   "description": "Provides a standardized dialog box for NextJS",
-   "author": {
-      "name": "hauke5",
-      "email": "helpfulscripts@gmail.com"
-   },
+   "version": "1.0.0",
+   "description": "Running an example of @hauke5/component/dialog",
+   "main": "index.js",
    "bin": {
       "@hauke5-dialog": "runExample.sh"
-   },
-   "license": "MIT",
-   "repository": {
-      "type": "git",
-      "url": "git+https://github.com/Hauke5/Dialog.git"
    },
    "keywords": [
       "NextJS Component",
@@ -24,18 +16,22 @@
       "build": "next build",
       "start": "next start -p 3001"
    },
+   "author": "hauke5",
+   "license": "MIT",
    "dependencies": {
+      "@hauke5/lib": "^1",
+      "@hauke5/components": "^1",
       "next": "^14",
       "next-auth": "^4",
-      "@hauke5/utils": "^1",
       "react": "^18",
       "sass": "^1"
    },
    "devDependencies": {
-      "typescript": "^5",
-      "@types/node": "^20",
-      "@types/react": "^18",
+      "@types/node": "20.16.12",
+      "@types/react": "18.3.11",
       "eslint": "^8",
-      "eslint-config-next": "^14"
+      "eslint-config-next": "^14",
+      "typescript": "5.6.3"
    }
-}
+ }
+ 
