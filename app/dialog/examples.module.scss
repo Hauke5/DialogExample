@@ -1,0 +1,24 @@
+
+.exampleLayout {
+   display: grid;
+   grid-template-rows: 60px 1fr;
+   height:100%;
+   .page {
+      margin: 0 10px;
+   }
+}
+
+.menu {
+   height:100%;
+   width: 100%;
+   .item {
+      font-size: 100%;
+      color: #008;
+      white-space: nowrap;
+      display:flex;
+      justify-content: center;
+      align-items: stretch;
+      span { margin:3px 1px 0 1px;}
+      svg { margin: 0 2px 0 2px; }
+   }
+}

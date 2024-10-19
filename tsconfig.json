@@ -27,14 +27,9 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@hauke5/lib/*": [
-        "lib/*",
-      ],
-      "@/app/*": [
-        "app/*",
-      ]
-    }
-  },
+      "@/app/*": ["app/*"]
+   }
+},
   "include": [
     "next-env.d.ts",
     "**/*.ts",

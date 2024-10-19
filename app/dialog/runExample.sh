@@ -14,7 +14,7 @@ npmV=$(npm pkg get version)
 echo "npm=$npmV, cwd=$pwd"
 
 appDir="./node_modules/@hauke5/$bundle/"
-echo "copying Dialog from $appDir/ to ./"
+echo "copying Dialog from $appDir to ./"
 cp -R $appDir ./
 
 npm i

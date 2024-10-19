@@ -1,7 +1,7 @@
-'use client'
-import { DialogExample } from "./DialogExample";
+import styles from './examples.module.scss'
 
-
-export default function DialogExamplePage() {
-   return <DialogExample />
+export default function ExamplePage() {
+   return <div className={styles.page}>
+      Select an example Tab in the middle above
+   </div>
 }
