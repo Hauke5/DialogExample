@@ -37,7 +37,7 @@ A simplest version of a dialog configuration might look like this:
    ]
 }
 ```
-<img src="./SimpleDialog.png" width="400">
+<img src="./SimpleDialog.png" width="300">
 
 The `ids` for items and buttons are by default used as their labels. Alternatively, an optional `label` field can be specified:
 ```typescript
@@ -120,9 +120,10 @@ In the example below, a sideEffect will be called each time the `ValidItem` numb
 {
    title: 'Example:',
    elements:[
-      { id:'ValidItem', type:'number', initial: 0, label:'Enter Valid Number:', sideEffect:(value, items)=>items.TextItem.isDefault
-         ? {TextItem: value!==0? 'valid number' : 'invalid number' }
-         : {}
+      { id:'ValidItem', type:'number', initial: 0, label:'Enter Valid Number:', 
+         sideEffect:(value, items)=>items.TextItem.isDefault
+            ? {TextItem: value!==0? 'valid number' : 'invalid number' }
+            : {}
       }},
       { id:'TextItem', type:'text',   initial: 'invalid', label:'Number Comment:'}},
    ],
@@ -130,3 +131,41 @@ In the example below, a sideEffect will be called each time the `ValidItem` numb
       { id:'OkButton', label:'OK'}}, 
    ]
 }
+```
+
+## Complex Example:
+```typescript
+{
+   title: 'Dialog Example With Side-Effects:',
+   description:  <div style={{borderBottom:"1px solid gray"}}>
+      A <b>complex</b> dialog:
+      <ul className={styles.instructions}>
+         <li><b>Hint:</b>You can move the box by dragging it in the title field.</li>
+         <li>Side effects within the dialog:</li>
+         <ul className={styles.instructions}>
+            <li><b>Ok Disabled</b>: Enter a number other than <code>0</code> in the the <code>Number</code> field to enable the <code>Ok</code> button.</li>
+            <li><b>Field auto-values</b>:Changing the <code>Number</code> field automatically sets the <code>Text</code> field 
+            to <code>valid</code> or <code>invalid</code> depending on the <code>Number</code> field value, 
+            unless the user has manually changed it before</li>
+         </ul>
+         <li>Click the <code>Ok</code> button when available. 
+         The left box below will reflect the values from the dialog.</li>
+      </ul>
+   </div>,
+   items:[
+      {id:'Date',      type:'date',   initial: new Date() },
+      {id:'Number',    type:'number', initial: 0,   label:'Enter Valid Number:',  sideEffect:(value:number, items) => 
+         items.Text.isDefault
+            ? {Text:(value !== 0)? 'valid number' : 'invalid number' }
+            : {}
+      },
+      {id:'Text',      type:'text',   initial: 'invalid', list:textFieldHistory},
+      {id:'Checkbox',  type:'boolean',initial: false},
+      {id:'List',      type:'select', initial: 'two',     list:['one', 'two', 'three']},
+   ],
+   buttons:[
+      {id:'Ok', disable:(values) => values.Number.value===0}, 
+   ]
+}
+```
+<img src="./ComplexDialog.png" width="600">
