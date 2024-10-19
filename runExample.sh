@@ -12,7 +12,7 @@ pwd=$(pwd)
 echo "cwd = $pwd"
 
 echo "copying Dialog to ./"
-cp -R $dirName/ ./
+cp $dirName/* ./
 
 npm i
 # cp -R ./node_modules/@hauke5/utils/lib ./
