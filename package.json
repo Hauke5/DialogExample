@@ -1,6 +1,6 @@
 {
    "name": "@hauke5/dialogexample",
-   "version": "1.1.11",
+   "version": "1.1.13",
    "description": "Running an example of @hauke5/component/dialog",
    "main": "index.js",
    "bin": {
