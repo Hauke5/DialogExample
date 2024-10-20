@@ -1,10 +1,10 @@
 {
-   "name": "@hauke5/dialog",
-   "version": "1.1.10",
+   "name": "@hauke5/dialogexample",
+   "version": "1.1.11",
    "description": "Running an example of @hauke5/component/dialog",
    "main": "index.js",
    "bin": {
-      "@hauke5/dialog": "runExample.sh"
+      "@hauke5/dialogexample": "runExample.sh"
    },
    "keywords": [
       "NextJS Component",
