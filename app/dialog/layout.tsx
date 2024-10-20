@@ -1,4 +1,4 @@
-import { LayoutProps }  from "@/app/layout";
+import { LayoutProps }  from "dialog/app/layout";
 import { AppTitleBar }  from "@hauke5/lib/apps/AppTitleBar";
 import styles           from './examples.module.scss'
 

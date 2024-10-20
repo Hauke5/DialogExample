@@ -27,7 +27,7 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/app/*": ["app/*"]
+      "@/app/*": ["dialog/app/*"]
    }
 },
   "include": [
