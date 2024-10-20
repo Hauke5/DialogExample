@@ -4,7 +4,7 @@
    "description": "Running an example of @hauke5/component/dialog",
    "main": "index.js",
    "bin": {
-      "@hauke5-dialog": "runExample.sh"
+      "@hauke5/dialog": "runExample.sh"
    },
    "keywords": [
       "NextJS Component",
