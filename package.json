@@ -1,10 +1,10 @@
 {
-   "name": "@hauke5/dialogexample",
+   "name": "dialogexample",
    "version": "1.2.1",
-   "description": "Running an example of @hauke5/component/dialog",
+   "description": "Running an example of component/dialog",
    "main": "index.js",
    "bin": {
-      "@hauke5/dialogexample": "app/dialog/runExample.sh"
+      "dialogexample": "app/dialog/runExample.sh"
    },
    "keywords": [
       "NextJS Component",
@@ -34,7 +34,7 @@
       "typescript": "5"
    },
    "workspaces": [
-      "@hauke5/lib",
-      "@hauke5/components"
+      "lib",
+      "components"
    ]
 }
