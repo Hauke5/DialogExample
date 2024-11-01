@@ -1,12 +1,12 @@
 'use server'
 import path                   from 'path';
-import fs                     from 'lib/fileIO/fsUtil'
-import { AppsContext }        from 'lib/apps/AppsContext';
-import { ChildrenOnlyProps }  from 'components/BaseProps'
-import { AppDesc }            from 'lib/apps';
-import { serverFindRoles }    from 'lib/apps/serverFindRoles';
-import { RoleDesc }           from 'lib/apps/types';
-import { Log }                from 'lib/utils';
+import fs                     from '@hauke5/lib/fileIO/server/fsUtil'
+import { AppsContext }        from '@hauke5/lib/apps/AppsContext';
+import { ChildrenOnlyProps }  from '@hauke5/lib/apps'
+import { AppDesc }            from '@hauke5/lib/apps';
+import { serverFindRoles }    from '@hauke5/lib/apps/serverFindRoles';
+import { RoleDesc }           from '@hauke5/lib/apps/types';
+import { Log }                from '@hauke5/lib/utils';
 import styles                 from '@/app/styles/App.module.scss'
 import                             './styles/globals.scss'
 

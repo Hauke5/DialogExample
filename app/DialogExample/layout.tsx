@@ -1,10 +1,10 @@
-import { AppTitleBar }  from "lib/apps/AppTitleBar";
+import { LayoutProps }  from '@hauke5/lib/apps'
+import { TitleBar }     from "@hauke5/components/TitleBar/TitleBar";
 import styles           from './examples.module.scss'
-import { LayoutProps }  from '../layout'
 
 export default function ExampleLayout({children}:LayoutProps) {
    return <div className={styles.exampleLayout}>
-      <AppTitleBar auth={false}/>
+      <TitleBar auth={false}/>
       {children}
    </div>
 }

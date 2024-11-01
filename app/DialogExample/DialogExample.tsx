@@ -1,7 +1,7 @@
 'use client'
 import { ReactNode, useEffect, useRef, useState }                
                                     from "react"
-import { Dialog, OpenDialog }       from "components/Dialog";
+import { Dialog, OpenDialog }       from "@hauke5/components/Dialog";
 import styles                       from './page.module.scss'
 import { useDialogWithSideEffects } from "./useDialogWithSideEffects";
 import { useSimpleDialog }          from "./useSimpleDialog";

@@ -13,5 +13,5 @@ git clone https://github.com/Hauke5/DialogExample.git
 cd DialogExample
 mkdir data
 npm i
-echo "$green$bold point a browser at http://localhost:3001/dialog"
+echo "$green$bold point a browser at http://localhost:3001/DialogExample"
 npm run dev

@@ -1,5 +1,5 @@
 'use client'
-import { OpenDialog }   from "components/Dialog";
+import { OpenDialog }   from "@hauke5/components/Dialog";
 import styles           from './page.module.scss'
 import { DialogReturn, Example }   
                         from "./DialogExample";
